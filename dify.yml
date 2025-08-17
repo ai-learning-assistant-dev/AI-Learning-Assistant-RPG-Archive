@@ -1,0 +1,1150 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: workflow
+  name: sillytavern producer
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/volcengine_maas:0.0.25@69d479387c274399cdf967854fa2eab8b2ece3c1b28c702724402913639dcc24
+kind: app
+version: 0.3.1
+workflow:
+  conversation_variables: []
+  environment_variables:
+  - description: ''
+    id: ad8e4324-4d23-488a-b49c-5b80905cd285
+    name: S3_REGION
+    selector:
+    - env
+    - S3_REGION
+    value: cn-guangzhou
+    value_type: string
+  - description: ''
+    id: eeda4e5d-bfb0-47f3-81df-b7afb5298e85
+    name: S3_BUCKET_NAME
+    selector:
+    - env
+    - S3_BUCKET_NAME
+    value: silly-tavern
+    value_type: string
+  - description: ''
+    id: 498ede88-7ca1-494c-ab34-7ebc9b887243
+    name: S3_ENDPOINT
+    selector:
+    - env
+    - S3_ENDPOINT
+    value: https://tos-s3-cn-guangzhou.volces.com
+    value_type: string
+  - description: ''
+    id: 16daada0-6be7-4773-bfc0-25889b473af6
+    name: S3_SECRET_ACCESS_KEY
+    selector:
+    - env
+    - S3_SECRET_ACCESS_KEY
+    value: Wm1FNE9XRXdOREV5WWpZMk5HWTJPVGszT1ROaFlURXhPRGcxWmpRMlkyRQ==
+    value_type: secret
+  - description: tos ak
+    id: d94b3436-aca6-4230-9b18-0f880809472a
+    name: S3_ACCESS_KEY_ID
+    selector:
+    - env
+    - S3_ACCESS_KEY_ID
+    value: AKLTNGVkMDM1YTAzZTY0NDE4MjgyMmUxN2VlZGI5ZDBiOWE
+    value_type: secret
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1755013697903-source-1755333812200-target
+      selected: false
+      source: '1755013697903'
+      sourceHandle: source
+      target: '1755333812200'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1755013697903-source-1755334965838-target
+      source: '1755013697903'
+      sourceHandle: source
+      target: '1755334965838'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1755333812200-source-1755345336430-target
+      source: '1755333812200'
+      sourceHandle: source
+      target: '1755345336430'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1755334965838-source-1755345336430-target
+      source: '1755334965838'
+      sourceHandle: source
+      target: '1755345336430'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: code
+      id: 1755345336430-source-1755349739661-target
+      source: '1755345336430'
+      sourceHandle: source
+      target: '1755349739661'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: code
+        targetType: code
+      id: 1755394568320-source-17553986203320-target
+      source: '1755394568320'
+      sourceHandle: source
+      target: '17553986203320'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: start
+        targetType: if-else
+      id: 1754406660427-source-1755399127965-target
+      source: '1754406660427'
+      sourceHandle: source
+      target: '1755399127965'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: if-else
+        targetType: llm
+      id: 1755399127965-false-1755013697903-target
+      source: '1755399127965'
+      sourceHandle: 'false'
+      target: '1755013697903'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: if-else
+        targetType: code
+      id: 1755399127965-true-1755394568320-target
+      source: '1755399127965'
+      sourceHandle: 'true'
+      target: '1755394568320'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: code
+        targetType: end
+      id: 17553986203320-source-1755399316678-target
+      source: '17553986203320'
+      sourceHandle: source
+      target: '1755399316678'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: code
+        targetType: end
+      id: 1755349739661-source-1754408356942-target
+      source: '1755349739661'
+      sourceHandle: source
+      target: '1754408356942'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 开始
+        type: start
+        variables:
+        - label: input
+          max_length: 256
+          options: []
+          required: true
+          type: text-input
+          variable: input
+        - label: debug
+          max_length: 48
+          options: []
+          required: true
+          type: text-input
+          variable: debug
+      height: 115
+      id: '1754406660427'
+      position:
+        x: -474.16034006134555
+        y: 316.0701915835626
+      positionAbsolute:
+        x: -474.16034006134555
+        y: 316.0701915835626
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        outputs:
+        - value_selector:
+          - '1755349739661'
+          - url
+          value_type: string
+          variable: url
+        selected: false
+        title: 结束
+        type: end
+      height: 90
+      id: '1754408356942'
+      position:
+        x: 1647.1713568829925
+        y: 603.0512675380639
+      positionAbsolute:
+        x: 1647.1713568829925
+        y: 603.0512675380639
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: Doubao-1.5-pro-256k
+          provider: langgenius/volcengine_maas/volcengine_maas
+        prompt_template:
+        - id: eabda7ee-2ed3-49a3-ba93-ad70eab5ccd7
+          role: system
+          text: '事件是既存符号秩序中突然出现的根本性断裂，它颠覆人们对现实的常规认知。事件不是简单的“发生”，而是：创伤性的：打破日常生活的平滑表面，暴露出现实中的矛盾（如“9·11”事件暴露了全球化时代的脆弱性）。不可化约的：无法用现有意识形态框架完全解释（例如，法国大革命对君主制合法性的彻底否定）。生成性的：事件创造新的可能性空间，重塑主体与世界的关系（如科学革命中的范式转移）。
+
+            你是一名社会洞察型跑团设计师，了解古今中外各种历史性事件，擅长将抽象社会规则转化为可操作的游戏系统。
+
+            基于用户提供的核心文本，设计具象化社会矛盾的沉浸式跑团剧本。
+
+            要求生成剧本大纲，交代故事背景。
+
+            基于上述文本和用户输入，你将创造一个事件性的跑团剧本'
+        - id: 6095b5f6-1827-44f4-b204-bb9cddc3dfa6
+          role: user
+          text: "以下是用户提供的核心文本\n {{#1754406660427.input#}}\n根据提炼的关键思想内核，生成剧本大纲，交代故事背景"
+        selected: false
+        structured_output:
+          schema:
+            additionalProperties: false
+            properties:
+              background:
+                description: 故事背景，包括核心冲突和待解决的目标，这里非常重要
+                type: string
+              events:
+                description: 剧本的关键支线事件，非线性叙事，要求事件不少于6个
+                items:
+                  type: string
+                type: array
+              name:
+                description: 跑团剧本名称
+                type: string
+            required:
+            - name
+            - background
+            - events
+            type: object
+        structured_output_enabled: true
+        title: 剧本核心
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 89
+      id: '1755013697903'
+      position:
+        x: 223.0886076360227
+        y: 609.857142857143
+      positionAbsolute:
+        x: 223.0886076360227
+        y: 609.857142857143
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: ' Doubao-Seed-1.6-flash'
+          provider: langgenius/volcengine_maas/volcengine_maas
+        prompt_template:
+        - id: 90f34ba4-b441-4c7b-ae5c-aca2b51548ec
+          role: system
+          text: 你是一个擅长塑造角色的小说家，擅长根据提供的剧本大纲和关键事件，生成个性鲜明，深刻人物基本特点、并基于此生成简介。
+        - id: ec70c77a-6d1d-46bb-938c-a82abf7cfeca
+          role: user
+          text: '故事背景{{#1755013697903.structured_output.background#}}
+
+            主要事件{{#1755013697903.structured_output.events#}}基于此生成具有代表性人物角色和生平简介，以及他是如何被卷入这个故事中的
+
+            要求如下
+
+            第一步，生成一个主控角色，跑团游戏通过主控角色进行的第一人称
+
+            第二步，根据故事背景和主要事件生成他者，无法看到其心理活动，3到5人
+
+            每个人的简介字数超过200字
+
+            '
+        selected: false
+        structured_output:
+          schema:
+            additionalProperties: false
+            properties:
+              main_character:
+                additionalProperties: false
+                description: 主控角色
+                properties:
+                  description:
+                    description: 人物简介、生平，是如何进入这个故事中的
+                    type: string
+                  name:
+                    description: 名称
+                    type: string
+                required:
+                - name
+                - description
+                type: object
+              others:
+                description: 其他角色的列表
+                items:
+                  additionalProperties: false
+                  properties:
+                    description:
+                      description: 人物简介、生平，是如何进入这个故事中的
+                      type: string
+                    name:
+                      description: 名称
+                      type: string
+                  required:
+                  - name
+                  - description
+                  type: object
+                type: array
+            required:
+            - main_character
+            - others
+            type: object
+        structured_output_enabled: true
+        title: 生成角色
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 89
+      id: '1755333812200'
+      position:
+        x: 581.4367021833149
+        y: 374.29383414132263
+      positionAbsolute:
+        x: 581.4367021833149
+        y: 374.29383414132263
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: ' Doubao-Seed-1.6-flash'
+          provider: langgenius/volcengine_maas/volcengine_maas
+        prompt_template:
+        - id: ce42af0f-312c-4b39-86b6-c1f77c6550a8
+          role: system
+          text: '要求
+
+            根据提供的背景信息和具体事件，对具体事件进行扩写，补充更多符合逻辑的细节。
+
+            事件扩写的逻辑、文风要保持一致，要有文采'
+        - id: 1baf3332-6f65-4994-b59d-b528cf2ea05c
+          role: user
+          text: '背景信息{{#1755013697903.structured_output.background#}}，事件 {{#1755013697903.structured_output.events#}}
+
+            要求
+
+            对每条事件进行扩写，扩写后的故事要有细节，字数超过300字
+
+            对扩写后的事件进行关键词总结，3到5个关键词，每个关键词3到6个字
+
+            扩写内容，要有小说描写故事的那种感觉'
+        selected: false
+        structured_output:
+          schema:
+            additionalProperties: false
+            properties:
+              events:
+                description: 扩写后事件列表
+                items:
+                  additionalProperties: false
+                  properties:
+                    key:
+                      description: 该事件的关键词列表，精简，3到6个字，列表长度上限是5个
+                      items:
+                        type: string
+                      type: array
+                    msg:
+                      description: 事件的内容，要有细节，300字到500字
+                      type: string
+                  required:
+                  - key
+                  - msg
+                  type: object
+                type: array
+            required:
+            - events
+            type: object
+        structured_output_enabled: true
+        title: 场景扩写
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 89
+      id: '1755334965838'
+      position:
+        x: 581.4367021833149
+        y: 784.1428571428573
+      positionAbsolute:
+        x: 581.4367021833149
+        y: 784.1428571428573
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: ' Doubao-Seed-1.6-flash'
+          provider: langgenius/volcengine_maas/volcengine_maas
+        prompt_template:
+        - id: 96bbb6f3-5ab5-49e7-b915-4b730cf890fb
+          role: system
+          text: '根据给到的背景信息和主要事件、生成故事的引子，要注重背景信息的介绍，略有文学小说的风格，注重环境的描写、气氛的烘托。
+
+            在多个主要事件中选取适合的事件作为引子'
+        - id: 8415d6be-119a-4b22-a995-1aaa86509529
+          role: user
+          text: "背景信息{{#1755013697903.structured_output.background#}} \n主要事件   {{#1755334965838.structured_output.events#}}\n\
+            主角{{#1755333812200.structured_output.main_character#}}\n生成2到3条剧本的第一幕，用户需要扮演主控角色<main_character>,作为剧情发展的亲历者，要有细节的描写，作为剧本的生成者，使用你来指代玩家扮演的角色，增加沉浸感"
+        selected: false
+        structured_output:
+          schema:
+            additionalProperties: false
+            properties:
+              firstmsg:
+                description: 第一幕的文本，可以有多个，提供给玩家选择
+                items:
+                  type: string
+                type: array
+            required:
+            - firstmsg
+            type: object
+        structured_output_enabled: true
+        title: 第一幕
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 89
+      id: '1755345336430'
+      position:
+        x: 974.0940900477669
+        y: 609.857142857143
+      positionAbsolute:
+        x: 974.0940900477669
+        y: 609.857142857143
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        code: "import json\nfrom dataclasses import asdict, dataclass\nfrom typing\
+          \ import List, Dict, Any, Optional\nfrom datetime import datetime\nimport\
+          \ hmac\nimport hashlib\n\nimport os\nimport requests\nimport urllib.parse\n\
+          \n#酒馆数据\n@dataclass\nclass RegexScript: #正则\n    id: str\n    scriptName:\
+          \ str\n    findRegex: str\n    replaceString: str\n    trimStrings: List[str]\n\
+          \    placement: List[int]\n    disabled: bool\n    markdownOnly: bool\n\
+          \    promptOnly: bool\n    runOnEdit: bool\n    substituteRegex: int\n \
+          \   minDepth: Optional[int] = None\n    maxDepth: Optional[int] = None\n\
+          \n@dataclass\nclass CharacterBookEntryExtensions:  # 世界书单一条目的信息，有很多用不上\n\
+          \    position: int\n    exclude_recursion: bool\n    display_index: int\n\
+          \    probability: int\n    useProbability: bool\n    depth: int\n    selectiveLogic:\
+          \ int\n    group: str\n    group_override: bool\n    group_weight: int\n\
+          \    prevent_recursion: bool\n    delay_until_recursion: bool\n    scan_depth:\
+          \ Optional[int] = None\n    match_whole_words: bool = False\n    use_group_scoring:\
+          \ bool = False\n    case_sensitive: bool = False\n    automation_id: str\
+          \ = \"\"\n    role: int = 0\n    vectorized: bool = False\n    sticky: int\
+          \ = 0\n    cooldown: int = 0\n    delay: int = 0\n    match_persona_description:\
+          \ bool = False\n    match_character_description: bool = False\n    match_character_personality:\
+          \ bool = False\n    match_character_depth_prompt: bool = False\n    match_scenario:\
+          \ bool = False\n    match_creator_notes: bool = False\n\n@dataclass\nclass\
+          \ CharacterBookEntry:\n    id: int\n    keys: List[str] #关键词\n    secondary_keys:\
+          \ List[str] #可选过滤器(st文本描述如此)\n    comment: str   #描述\n    content: str \
+          \  #激活后替换的文本\n    constant: bool  # 是否永久激活,为true就不管正则是否生效，都会插入世界书\n    selective:\
+          \ bool #永久为true？不知道含义\n    insertion_order: int  #同一个插入位置的顺序，数字小的在上面\n \
+          \   enabled: bool    # 是否应用\n    position: str    # 几个位置枚举 after_char\n\
+          \    use_regex: bool  # 大多为true\n    #extensions: CharacterBookEntryExtensions\n\
+          \n@dataclass\nclass CharacterBook:\n    entries: List[CharacterBookEntry]\n\
+          \    name: str\n\n@dataclass\nclass Extensions:\n    talkativeness: str\n\
+          \    fav: bool\n    world: str\n    depth_prompt: Dict[str, Any]\n    regex_scripts:\
+          \ List[RegexScript]\n\n@dataclass\nclass Data:\n    name: str\n    first_mes:\
+          \ str\n    alternate_greetings: List[str]\n    #extensions: Extensions\n\
+          \    group_only_greetings: List[str]\n    character_book: CharacterBook\n\
+          \n@dataclass\nclass CharaCardV3:\n    name: str\n    first_mes: str\n  \
+          \  talkativeness: str\n    spec: str\n    spec_version: str\n    data: Data\n\
+          \    create_date: str\n\n#自定义数据\n@dataclass\nclass role:\n    name: str\n\
+          \    desc: str\n\n@dataclass\nclass ent:\n    key: List[str]\n    msg: str\n\
+          \ndef main(nameArg: str, maincharacterArg: dict, othersArg: list, eventsArg:\
+          \ list, firstmsgArg: list, S3_REGION: str, S3_BUCKET_NAME: str, S3_ENDPOINT:\
+          \ str, S3_SECRET_ACCESS_KEY, S3_ACCESS_KEY_ID) -> dict:\n    name=nameArg\n\
+          \    maincharacter = role(\n        name=maincharacterArg['name'],\n   \
+          \     desc=maincharacterArg['description']\n    )\n\n    others = [role(name=o['name'],\
+          \ desc=o['description']) for o in othersArg]\n    events =[]\n    #events\
+          \ = [ent(key=e['key'], msg=e['msg']) for e in eventsArg]\n    firmsg = firstmsgArg\n\
+          \n        #生成世界书\n    i = 0\n    cbes:List[CharacterBookEntry] = []\n  \
+          \  cbe = CharacterBookEntry(\n            id=i,\n            keys=[],\n\
+          \            secondary_keys=[],\n            comment=\"角色背景\",\n       \
+          \     content=maincharacter.name+\":\"+maincharacter.desc,\n           \
+          \ constant=True,\n            selective=True,\n            insertion_order=100,\n\
+          \            enabled=True,\n            position=\"after_char\",\n     \
+          \       use_regex=True,\n            )\n    cbes.append(cbe)\n    i = i\
+          \ + 1\n    for other in others:\n        cbes.append(CharacterBookEntry(\n\
+          \            id=i,\n            keys=[other.name],\n            secondary_keys=[],\n\
+          \            comment=\"角色背景\",\n            content=other.name+\":\"+other.desc,\n\
+          \            constant=True,\n            selective=True,\n            insertion_order=100,\n\
+          \            enabled=True,\n            position=\"after_char\",\n     \
+          \       use_regex=True,\n        ))\n        i = i + 1\n    for event in\
+          \ events:\n        cbes.append(CharacterBookEntry(\n            id=i,\n\
+          \            keys=event.key,\n            secondary_keys=[],\n         \
+          \   comment=f\"事件{event.key.get('0', '未知')}\",\n            content=event.msg,\n\
+          \            constant=True,\n            selective=True,\n            insertion_order=100,\n\
+          \            enabled=True,\n            position=\"after_char\",\n     \
+          \       use_regex=True,\n        ))\n        i = i + 1\n    \n    data =\
+          \ Data(\n        name=name,\n        first_mes=firmsg[0],\n        alternate_greetings=[msg\
+          \ for msg in firmsg[1:]],\n        group_only_greetings=[],\n        character_book=CharacterBook(\n\
+          \            entries=cbes,\n            name=f\"世界书:{name}\"\n        ),\n\
+          \    )\n    current_time = datetime.now()\n    formatted_time = current_time.strftime(\"\
+          %Y-%m-%d %H:%M:%S\")\n    card = CharaCardV3(\n        name=name,\n    \
+          \    first_mes=firmsg[0],\n        talkativeness=\"0.5\",\n        spec=\"\
+          chara_card_v3\",\n        spec_version=\"3.0\",\n        data=data,\n  \
+          \      create_date= formatted_time\n    )\n    s = json.dumps(asdict(card),\
+          \ ensure_ascii=False)\n    # ret: Output = {\n    #     \"name\": name,\n\
+          \    #     \"first_mes\": firmsg[0],\n    #     \"talkativeness\":\"0.5\"\
+          ,\n    #     \"spec\":\"chara_card_v3\",\n    #     \"spec_version\":\"\
+          3.0\",\n    #     \"data\":s,\n    #     \"create_date\": formatted_time,\n\
+          \    # }\n    access_key = S3_ACCESS_KEY_ID\n    secret_key = S3_SECRET_ACCESS_KEY\n\
+          \    endpoint = S3_ENDPOINT\n    bucket = S3_BUCKET_NAME\n    region = S3_REGION\n\
+          \    if access_key is None:\n        raise EnvironmentError(f\"环境变量未设置或为空\"\
+          )\n    s3 = S3Client(\n        access_key=access_key,\n        secret_key=secret_key,\n\
+          \        endpoint=endpoint,\n        bucket=bucket,\n        region=\"cn-guangzhou\"\
+          ,\n    )\n    \n    data_bytes = s.encode('utf-8') \n    s3_key = f\"card/{name}_{datetime.utcnow().isoformat()}.json\"\
+          \n    # 上传并获取URL\n    if s3.put_object(s3_key, data_bytes):\n        url\
+          \ = (s3.generate_presigned_url(s3_key))\n    else:\n        raise RuntimeError(\"\
+          S3 upload failed\")\n    return {\n        \"url\": url\n    }\n\n\nclass\
+          \ S3Client:\n    def __init__(self, access_key, secret_key, endpoint, bucket,\
+          \ region=\"cn-guangzhou\"):\n        self.access_key = access_key\n    \
+          \    self.secret_key = secret_key\n        self.bucket = bucket\n      \
+          \  self.endpoint = endpoint.replace('https://', '').replace('http://', '')\n\
+          \        self.service = 's3'\n        self.region = region or \"cn-guangzhou\"\
+          \n\n    def _get_signature_key(self, date_stamp):\n        k_date = hmac.new(f\"\
+          AWS4{self.secret_key}\".encode('utf-8'), date_stamp.encode('utf-8'), hashlib.sha256).digest()\n\
+          \        k_region = hmac.new(k_date, self.region.encode('utf-8'), hashlib.sha256).digest()\n\
+          \        k_service = hmac.new(k_region, self.service.encode('utf-8'), hashlib.sha256).digest()\n\
+          \        return hmac.new(k_service, b\"aws4_request\", hashlib.sha256).digest()\n\
+          \n    def _build_canonical_request(self, method, key, headers, signed_headers,\
+          \ payload_hash):\n        # 1. HTTP方法\n        canonical_request = f\"{method}\\\
+          n\"\n        \n        # 2. CanonicalURI (URL编码路径)\n        canonical_request\
+          \ += f\"/{urllib.parse.quote(key, safe='/')}\\n\"\n        \n        # 3.\
+          \ CanonicalQueryString (空字符串，无查询参数)\n        canonical_request += \"\\n\"\
+          \n        \n        # 4. CanonicalHeaders (按小写字段名排序)\n        sorted_headers\
+          \ = sorted(headers.items(), key=lambda x: x[0].lower())\n        for header_name,\
+          \ header_value in sorted_headers:\n            canonical_request += f\"\
+          {header_name.lower()}:{header_value}\\n\"\n        \n        # 5. SignedHeaders\
+          \ (排序的头部列表)\n        canonical_request += \"\\n\"\n        canonical_request\
+          \ += signed_headers + \"\\n\"\n        \n        # 6. HashedPayload\n  \
+          \      canonical_request += payload_hash\n        \n        return canonical_request\n\
+          \n    def _build_auth_header(self, method, key, headers, signed_headers,\
+          \ payload_hash):\n        datestamp = datetime.utcnow().strftime('%Y%m%d')\n\
+          \        amz_date = headers['x-amz-date']\n        \n        # 1. 构建CanonicalRequest\n\
+          \        canonical_request = self._build_canonical_request(\n          \
+          \  method, key, headers, signed_headers, payload_hash\n        )\n     \
+          \   \n        # 2. 创建要签名的字符串\n        algorithm = 'AWS4-HMAC-SHA256'\n \
+          \       credential_scope = f\"{datestamp}/{self.region}/{self.service}/aws4_request\"\
+          \n        \n        string_to_sign = (\n            f\"{algorithm}\\n\"\n\
+          \            f\"{amz_date}\\n\"\n            f\"{credential_scope}\\n\"\n\
+          \            f\"{hashlib.sha256(canonical_request.encode('utf-8')).hexdigest()}\"\
+          \n        )\n        \n        # 3. 计算签名\n        signing_key = self._get_signature_key(datestamp)\n\
+          \        signature = hmac.new(signing_key, string_to_sign.encode('utf-8'),\
+          \ hashlib.sha256).hexdigest()\n        \n        return (\n            f\"\
+          {algorithm} Credential={self.access_key}/{credential_scope}, \"\n      \
+          \      f\"SignedHeaders={signed_headers}, Signature={signature}\"\n    \
+          \    )\n\n    def put_object(self, key, data, content_type='application/json'):\n\
+          \        # 准备请求参数\n        host = f\"{self.bucket}.{self.endpoint}\"\n \
+          \       url = f\"https://{host}/{urllib.parse.quote(key, safe='/')}\"\n\
+          \        amz_date = datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')\n     \
+          \   payload_hash = hashlib.sha256(data).hexdigest()\n        \n        #\
+          \ 必须包含所有签名头\n        headers = {\n            'Host': host,\n          \
+          \  'Content-Type': content_type,\n            'x-amz-date': amz_date,\n\
+          \            'x-amz-content-sha256': payload_hash\n        }\n        \n\
+          \        # 排序的签名头部列表\n        signed_headers = ';'.join(sorted(header.lower()\
+          \ for header in headers.keys()))\n        \n        # 生成认证头\n        auth_header\
+          \ = self._build_auth_header(\n            'PUT', key, headers, signed_headers,\
+          \ payload_hash\n        )\n        headers['Authorization'] = auth_header\n\
+          \        \n        # 发送请求\n        response = requests.put(url, data=data,\
+          \ headers=headers)\n        return response.status_code == 200\n\n    def\
+          \ generate_presigned_url(self, key, expires=3600):\n        host = f\"{self.bucket}.{self.endpoint}\"\
+          \n        datestamp = datetime.utcnow().strftime('%Y%m%d')\n        amz_date\
+          \ = datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')\n        credential_scope\
+          \ = f\"{datestamp}/{self.region}/s3/aws4_request\"\n        \n        #\
+          \ 查询参数\n        query_params = {\n            'X-Amz-Algorithm': 'AWS4-HMAC-SHA256',\n\
+          \            'X-Amz-Credential': f\"{self.access_key}/{credential_scope}\"\
+          ,\n            'X-Amz-Date': amz_date,\n            'X-Amz-Expires': str(expires),\n\
+          \            'X-Amz-SignedHeaders': 'host',\n        }\n        \n     \
+          \   # 规范查询字符串\n        canonical_querystring = '&'.join(\n            f\"\
+          {k}={urllib.parse.quote(v, safe='')}\" \n            for k, v in sorted(query_params.items())\n\
+          \        )\n        \n        # 规范请求\n        canonical_request = (\n  \
+          \          f\"GET\\n\"\n            f\"/{urllib.parse.quote(key, safe='/')}\\\
+          n\"\n            f\"{canonical_querystring}\\n\"\n            f\"host:{host}\\\
+          n\\n\"\n            f\"host\\n\"\n            f\"UNSIGNED-PAYLOAD\"\n  \
+          \      )\n        \n        # 创建要签名的字符串\n        string_to_sign = (\n  \
+          \          f\"AWS4-HMAC-SHA256\\n\"\n            f\"{amz_date}\\n\"\n  \
+          \          f\"{credential_scope}\\n\"\n            f\"{hashlib.sha256(canonical_request.encode('utf-8')).hexdigest()}\"\
+          \n        )\n        \n        # 计算签名\n        signing_key = self._get_signature_key(datestamp)\n\
+          \        signature = hmac.new(signing_key, string_to_sign.encode('utf-8'),\
+          \ hashlib.sha256).hexdigest()\n        \n        return f\"https://{host}/{urllib.parse.quote(key,\
+          \ safe='/')}?{canonical_querystring}&X-Amz-Signature={signature}\"\n\n\n"
+        code_language: python3
+        desc: ''
+        outputs:
+          url:
+            children: null
+            type: string
+        selected: false
+        title: 数据处理
+        type: code
+        variables:
+        - value_selector:
+          - '1755013697903'
+          - structured_output
+          - name
+          value_type: object
+          variable: nameArg
+        - value_selector:
+          - '1755333812200'
+          - structured_output
+          - main_character
+          value_type: object
+          variable: maincharacterArg
+        - value_selector:
+          - '1755333812200'
+          - structured_output
+          - others
+          value_type: object
+          variable: othersArg
+        - value_selector:
+          - '1755334965838'
+          - structured_output
+          - events
+          value_type: object
+          variable: eventsArg
+        - value_selector:
+          - '1755345336430'
+          - structured_output
+          - firstmsg
+          value_type: object
+          variable: firstmsgArg
+        - value_selector:
+          - env
+          - S3_REGION
+          value_type: string
+          variable: S3_REGION
+        - value_selector:
+          - env
+          - S3_BUCKET_NAME
+          value_type: string
+          variable: S3_BUCKET_NAME
+        - value_selector:
+          - env
+          - S3_ENDPOINT
+          value_type: string
+          variable: S3_ENDPOINT
+        - value_selector:
+          - env
+          - S3_SECRET_ACCESS_KEY
+          value_type: secret
+          variable: S3_SECRET_ACCESS_KEY
+        - value_selector:
+          - env
+          - S3_ACCESS_KEY_ID
+          value_type: secret
+          variable: S3_ACCESS_KEY_ID
+      height: 53
+      id: '1755349739661'
+      position:
+        x: 1344.242398153081
+        y: 609.857142857143
+      positionAbsolute:
+        x: 1344.242398153081
+        y: 609.857142857143
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        code: "\ndef main() -> dict:\n    return {\n        \"name\":\"111\",\n  \
+          \      \"mc\": {\"name\": \"主角\", \"description\": \"主角的描述\"},\n       \
+          \ \"others\": [{\"name\": \"配角1\", \"description\": \"配角1的描述\"}, {\"name\"\
+          : \"配角2\", \"description\": \"配角2的描述\"}],\n        \"events\": [{\"key\"\
+          : [\"event1\"], \"msg\": \"事件1的描述\"}, {\"key\": [\"event2\"], \"msg\": \"\
+          事件2的描述\"}],\n        \"firstmsg\":[\"你好，欢迎来到酒馆！\", \"请问有什么可以帮助你的？\"]\n \
+          \   }\n"
+        code_language: python3
+        desc: ''
+        outputs:
+          events:
+            children: null
+            type: array[object]
+          firstmsg:
+            children: null
+            type: array[string]
+          mc:
+            children: null
+            type: object
+          name:
+            children: null
+            type: string
+          others:
+            children: null
+            type: array[object]
+        selected: false
+        title: debug
+        type: code
+        variables: []
+      height: 53
+      id: '1755394568320'
+      position:
+        x: 1072.894540867587
+        y: 118.13340637245705
+      positionAbsolute:
+        x: 1072.894540867587
+        y: 118.13340637245705
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        code: "import json\nfrom dataclasses import asdict, dataclass\nfrom typing\
+          \ import List, Dict, Any, Optional\nfrom datetime import datetime\nimport\
+          \ hmac\nimport hashlib\n\nimport os\nimport requests\nimport urllib.parse\n\
+          \n#酒馆数据\n@dataclass\nclass RegexScript: #正则\n    id: str\n    scriptName:\
+          \ str\n    findRegex: str\n    replaceString: str\n    trimStrings: List[str]\n\
+          \    placement: List[int]\n    disabled: bool\n    markdownOnly: bool\n\
+          \    promptOnly: bool\n    runOnEdit: bool\n    substituteRegex: int\n \
+          \   minDepth: Optional[int] = None\n    maxDepth: Optional[int] = None\n\
+          \n@dataclass\nclass CharacterBookEntryExtensions:  # 世界书单一条目的信息，有很多用不上\n\
+          \    position: int\n    exclude_recursion: bool\n    display_index: int\n\
+          \    probability: int\n    useProbability: bool\n    depth: int\n    selectiveLogic:\
+          \ int\n    group: str\n    group_override: bool\n    group_weight: int\n\
+          \    prevent_recursion: bool\n    delay_until_recursion: bool\n    scan_depth:\
+          \ Optional[int] = None\n    match_whole_words: bool = False\n    use_group_scoring:\
+          \ bool = False\n    case_sensitive: bool = False\n    automation_id: str\
+          \ = \"\"\n    role: int = 0\n    vectorized: bool = False\n    sticky: int\
+          \ = 0\n    cooldown: int = 0\n    delay: int = 0\n    match_persona_description:\
+          \ bool = False\n    match_character_description: bool = False\n    match_character_personality:\
+          \ bool = False\n    match_character_depth_prompt: bool = False\n    match_scenario:\
+          \ bool = False\n    match_creator_notes: bool = False\n\n@dataclass\nclass\
+          \ CharacterBookEntry:\n    id: int\n    keys: List[str] #关键词\n    secondary_keys:\
+          \ List[str] #可选过滤器(st文本描述如此)\n    comment: str   #描述\n    content: str \
+          \  #激活后替换的文本\n    constant: bool  # 是否永久激活,为true就不管正则是否生效，都会插入世界书\n    selective:\
+          \ bool #永久为true？不知道含义\n    insertion_order: int  #同一个插入位置的顺序，数字小的在上面\n \
+          \   enabled: bool    # 是否应用\n    position: str    # 几个位置枚举 after_char\n\
+          \    use_regex: bool  # 大多为true\n    #extensions: CharacterBookEntryExtensions\n\
+          \n@dataclass\nclass CharacterBook:\n    entries: List[CharacterBookEntry]\n\
+          \    name: str\n\n@dataclass\nclass Extensions:\n    talkativeness: str\n\
+          \    fav: bool\n    world: str\n    depth_prompt: Dict[str, Any]\n    regex_scripts:\
+          \ List[RegexScript]\n\n@dataclass\nclass Data:\n    name: str\n    first_mes:\
+          \ str\n    alternate_greetings: List[str]\n    #extensions: Extensions\n\
+          \    group_only_greetings: List[str]\n    character_book: CharacterBook\n\
+          \n@dataclass\nclass CharaCardV3:\n    name: str\n    first_mes: str\n  \
+          \  talkativeness: str\n    spec: str\n    spec_version: str\n    data: Data\n\
+          \    create_date: str\n\n#自定义数据\n@dataclass\nclass role:\n    name: str\n\
+          \    desc: str\n\n@dataclass\nclass ent:\n    key: List[str]\n    msg: str\n\
+          \ndef main(nameArg: str, maincharacterArg: dict, othersArg: list, eventsArg:\
+          \ list, firstmsgArg: list, S3_REGION: str, S3_BUCKET_NAME: str, S3_ENDPOINT:\
+          \ str, S3_SECRET_ACCESS_KEY, S3_ACCESS_KEY_ID) -> dict:\n    name=nameArg\n\
+          \    maincharacter = role(\n        name=maincharacterArg['name'],\n   \
+          \     desc=maincharacterArg['description']\n    )\n\n    others = [role(name=o['name'],\
+          \ desc=o['description']) for o in othersArg]\n    events =[]\n    #events\
+          \ = [ent(key=e['key'], msg=e['msg']) for e in eventsArg]\n    firmsg = firstmsgArg\n\
+          \n        #生成世界书\n    i = 0\n    cbes:List[CharacterBookEntry] = []\n  \
+          \  cbe = CharacterBookEntry(\n            id=i,\n            keys=[],\n\
+          \            secondary_keys=[],\n            comment=\"角色背景\",\n       \
+          \     content=maincharacter.name+\":\"+maincharacter.desc,\n           \
+          \ constant=True,\n            selective=True,\n            insertion_order=100,\n\
+          \            enabled=True,\n            position=\"after_char\",\n     \
+          \       use_regex=True,\n            )\n    cbes.append(cbe)\n    i = i\
+          \ + 1\n    for other in others:\n        cbes.append(CharacterBookEntry(\n\
+          \            id=i,\n            keys=[other.name],\n            secondary_keys=[],\n\
+          \            comment=\"角色背景\",\n            content=other.name+\":\"+other.desc,\n\
+          \            constant=True,\n            selective=True,\n            insertion_order=100,\n\
+          \            enabled=True,\n            position=\"after_char\",\n     \
+          \       use_regex=True,\n        ))\n        i = i + 1\n    for event in\
+          \ events:\n        cbes.append(CharacterBookEntry(\n            id=i,\n\
+          \            keys=event.key,\n            secondary_keys=[],\n         \
+          \   comment=f\"事件{event.key.get('0', '未知')}\",\n            content=event.msg,\n\
+          \            constant=True,\n            selective=True,\n            insertion_order=100,\n\
+          \            enabled=True,\n            position=\"after_char\",\n     \
+          \       use_regex=True,\n        ))\n        i = i + 1\n    \n    data =\
+          \ Data(\n        name=name,\n        first_mes=firmsg[0],\n        alternate_greetings=[msg\
+          \ for msg in firmsg[1:]],\n        group_only_greetings=[],\n        character_book=CharacterBook(\n\
+          \            entries=cbes,\n            name=f\"世界书:{name}\"\n        ),\n\
+          \    )\n    current_time = datetime.now()\n    formatted_time = current_time.strftime(\"\
+          %Y-%m-%d %H:%M:%S\")\n    card = CharaCardV3(\n        name=name,\n    \
+          \    first_mes=firmsg[0],\n        talkativeness=\"0.5\",\n        spec=\"\
+          chara_card_v3\",\n        spec_version=\"3.0\",\n        data=data,\n  \
+          \      create_date= formatted_time\n    )\n    s = json.dumps(asdict(card),\
+          \ ensure_ascii=False)\n    # ret: Output = {\n    #     \"name\": name,\n\
+          \    #     \"first_mes\": firmsg[0],\n    #     \"talkativeness\":\"0.5\"\
+          ,\n    #     \"spec\":\"chara_card_v3\",\n    #     \"spec_version\":\"\
+          3.0\",\n    #     \"data\":s,\n    #     \"create_date\": formatted_time,\n\
+          \    # }\n    access_key = S3_ACCESS_KEY_ID\n    secret_key = S3_SECRET_ACCESS_KEY\n\
+          \    endpoint = S3_ENDPOINT\n    bucket = S3_BUCKET_NAME\n    region = S3_REGION\n\
+          \    if access_key is None:\n        raise EnvironmentError(f\"环境变量未设置或为空\"\
+          )\n    s3 = S3Client(\n        access_key=access_key,\n        secret_key=secret_key,\n\
+          \        endpoint=endpoint,\n        bucket=bucket,\n        region=region,\n\
+          \    )\n    \n    data_bytes = s.encode('utf-8') \n    s3_key = f\"card/{name}_{datetime.utcnow().isoformat()}.json\"\
+          \n    # 上传并获取URL\n    if s3.put_object(s3_key, data_bytes):\n        url\
+          \ = (s3.generate_presigned_url(s3_key))\n    else:\n        raise RuntimeError(f\"\
+          S3 upload failed{access_key}\")\n    return {\n        \"url\": url\n  \
+          \  }\n\n\nclass S3Client:\n    def __init__(self, access_key, secret_key,\
+          \ endpoint, bucket, region=\"cn-guangzhou\"):\n        self.access_key =\
+          \ access_key\n        self.secret_key = secret_key\n        self.bucket\
+          \ = bucket\n        self.endpoint = endpoint.replace('https://', '').replace('http://',\
+          \ '')\n        self.service = 's3'\n        self.region = region or \"cn-guangzhou\"\
+          \n\n    def _get_signature_key(self, date_stamp):\n        k_date = hmac.new(f\"\
+          AWS4{self.secret_key}\".encode('utf-8'), date_stamp.encode('utf-8'), hashlib.sha256).digest()\n\
+          \        k_region = hmac.new(k_date, self.region.encode('utf-8'), hashlib.sha256).digest()\n\
+          \        k_service = hmac.new(k_region, self.service.encode('utf-8'), hashlib.sha256).digest()\n\
+          \        return hmac.new(k_service, b\"aws4_request\", hashlib.sha256).digest()\n\
+          \n    def _build_canonical_request(self, method, key, headers, signed_headers,\
+          \ payload_hash):\n        # 1. HTTP方法\n        canonical_request = f\"{method}\\\
+          n\"\n        \n        # 2. CanonicalURI (URL编码路径)\n        canonical_request\
+          \ += f\"/{urllib.parse.quote(key, safe='/')}\\n\"\n        \n        # 3.\
+          \ CanonicalQueryString (空字符串，无查询参数)\n        canonical_request += \"\\n\"\
+          \n        \n        # 4. CanonicalHeaders (按小写字段名排序)\n        sorted_headers\
+          \ = sorted(headers.items(), key=lambda x: x[0].lower())\n        for header_name,\
+          \ header_value in sorted_headers:\n            canonical_request += f\"\
+          {header_name.lower()}:{header_value}\\n\"\n        \n        # 5. SignedHeaders\
+          \ (排序的头部列表)\n        canonical_request += \"\\n\"\n        canonical_request\
+          \ += signed_headers + \"\\n\"\n        \n        # 6. HashedPayload\n  \
+          \      canonical_request += payload_hash\n        \n        return canonical_request\n\
+          \n    def _build_auth_header(self, method, key, headers, signed_headers,\
+          \ payload_hash):\n        datestamp = datetime.utcnow().strftime('%Y%m%d')\n\
+          \        amz_date = headers['x-amz-date']\n        \n        # 1. 构建CanonicalRequest\n\
+          \        canonical_request = self._build_canonical_request(\n          \
+          \  method, key, headers, signed_headers, payload_hash\n        )\n     \
+          \   \n        # 2. 创建要签名的字符串\n        algorithm = 'AWS4-HMAC-SHA256'\n \
+          \       credential_scope = f\"{datestamp}/{self.region}/{self.service}/aws4_request\"\
+          \n        \n        string_to_sign = (\n            f\"{algorithm}\\n\"\n\
+          \            f\"{amz_date}\\n\"\n            f\"{credential_scope}\\n\"\n\
+          \            f\"{hashlib.sha256(canonical_request.encode('utf-8')).hexdigest()}\"\
+          \n        )\n        \n        # 3. 计算签名\n        signing_key = self._get_signature_key(datestamp)\n\
+          \        signature = hmac.new(signing_key, string_to_sign.encode('utf-8'),\
+          \ hashlib.sha256).hexdigest()\n        \n        return (\n            f\"\
+          {algorithm} Credential={self.access_key}/{credential_scope}, \"\n      \
+          \      f\"SignedHeaders={signed_headers}, Signature={signature}\"\n    \
+          \    )\n\n    def put_object(self, key, data, content_type='application/json'):\n\
+          \        # 准备请求参数\n        host = f\"{self.bucket}.{self.endpoint}\"\n \
+          \       url = f\"https://{host}/{urllib.parse.quote(key, safe='/')}\"\n\
+          \        amz_date = datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')\n     \
+          \   payload_hash = hashlib.sha256(data).hexdigest()\n        \n        #\
+          \ 必须包含所有签名头\n        headers = {\n            'Host': host,\n          \
+          \  'Content-Type': content_type,\n            'x-amz-date': amz_date,\n\
+          \            'x-amz-content-sha256': payload_hash\n        }\n        \n\
+          \        # 排序的签名头部列表\n        signed_headers = ';'.join(sorted(header.lower()\
+          \ for header in headers.keys()))\n        \n        # 生成认证头\n        auth_header\
+          \ = self._build_auth_header(\n            'PUT', key, headers, signed_headers,\
+          \ payload_hash\n        )\n        headers['Authorization'] = auth_header\n\
+          \        \n        # 发送请求\n        response = requests.put(url, data=data,\
+          \ headers=headers)\n        return response.status_code == 200\n\n    def\
+          \ generate_presigned_url(self, key, expires=3600):\n        host = f\"{self.bucket}.{self.endpoint}\"\
+          \n        datestamp = datetime.utcnow().strftime('%Y%m%d')\n        amz_date\
+          \ = datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')\n        credential_scope\
+          \ = f\"{datestamp}/{self.region}/s3/aws4_request\"\n        \n        #\
+          \ 查询参数\n        query_params = {\n            'X-Amz-Algorithm': 'AWS4-HMAC-SHA256',\n\
+          \            'X-Amz-Credential': f\"{self.access_key}/{credential_scope}\"\
+          ,\n            'X-Amz-Date': amz_date,\n            'X-Amz-Expires': str(expires),\n\
+          \            'X-Amz-SignedHeaders': 'host',\n        }\n        \n     \
+          \   # 规范查询字符串\n        canonical_querystring = '&'.join(\n            f\"\
+          {k}={urllib.parse.quote(v, safe='')}\" \n            for k, v in sorted(query_params.items())\n\
+          \        )\n        \n        # 规范请求\n        canonical_request = (\n  \
+          \          f\"GET\\n\"\n            f\"/{urllib.parse.quote(key, safe='/')}\\\
+          n\"\n            f\"{canonical_querystring}\\n\"\n            f\"host:{host}\\\
+          n\\n\"\n            f\"host\\n\"\n            f\"UNSIGNED-PAYLOAD\"\n  \
+          \      )\n        \n        # 创建要签名的字符串\n        string_to_sign = (\n  \
+          \          f\"AWS4-HMAC-SHA256\\n\"\n            f\"{amz_date}\\n\"\n  \
+          \          f\"{credential_scope}\\n\"\n            f\"{hashlib.sha256(canonical_request.encode('utf-8')).hexdigest()}\"\
+          \n        )\n        \n        # 计算签名\n        signing_key = self._get_signature_key(datestamp)\n\
+          \        signature = hmac.new(signing_key, string_to_sign.encode('utf-8'),\
+          \ hashlib.sha256).hexdigest()\n        \n        return f\"https://{host}/{urllib.parse.quote(key,\
+          \ safe='/')}?{canonical_querystring}&X-Amz-Signature={signature}\"\n\n\n"
+        code_language: python3
+        desc: ''
+        outputs:
+          url:
+            children: null
+            type: string
+        selected: false
+        title: 数据处理 (1)
+        type: code
+        variables:
+        - value_selector:
+          - '1755394568320'
+          - name
+          value_type: string
+          variable: nameArg
+        - value_selector:
+          - '1755394568320'
+          - mc
+          value_type: object
+          variable: maincharacterArg
+        - value_selector:
+          - '1755394568320'
+          - others
+          value_type: array[object]
+          variable: othersArg
+        - value_selector:
+          - '1755394568320'
+          - events
+          value_type: array[object]
+          variable: eventsArg
+        - value_selector:
+          - '1755394568320'
+          - firstmsg
+          value_type: array[string]
+          variable: firstmsgArg
+        - value_selector:
+          - env
+          - S3_REGION
+          value_type: string
+          variable: S3_REGION
+        - value_selector:
+          - env
+          - S3_BUCKET_NAME
+          value_type: string
+          variable: S3_BUCKET_NAME
+        - value_selector:
+          - env
+          - S3_ENDPOINT
+          value_type: string
+          variable: S3_ENDPOINT
+        - value_selector:
+          - env
+          - S3_SECRET_ACCESS_KEY
+          value_type: secret
+          variable: S3_SECRET_ACCESS_KEY
+        - value_selector:
+          - env
+          - S3_ACCESS_KEY_ID
+          value_type: secret
+          variable: S3_ACCESS_KEY_ID
+      height: 53
+      id: '17553986203320'
+      position:
+        x: 1344.242398153081
+        y: 118.13340637245705
+      positionAbsolute:
+        x: 1344.242398153081
+        y: 118.13340637245705
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        author: Dify
+        desc: ''
+        height: 88
+        selected: false
+        showAuthor: true
+        text: '{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"测试非大模型部分","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}'
+        theme: blue
+        title: ''
+        type: ''
+        width: 240
+      height: 88
+      id: '1755398991129'
+      position:
+        x: 1072.894540867587
+        y: 15.112065500389576
+      positionAbsolute:
+        x: 1072.894540867587
+        y: 15.112065500389576
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom-note
+      width: 240
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: is
+            id: 042fa2d5-660d-4f40-962a-e3749e046ede
+            value: 'true'
+            varType: string
+            variable_selector:
+            - '1754406660427'
+            - debug
+          id: 'true'
+          logical_operator: and
+        desc: ''
+        selected: false
+        title: 条件分支
+        type: if-else
+      height: 125
+      id: '1755399127965'
+      position:
+        x: -186.9441851036331
+        y: 316.0701915835626
+      positionAbsolute:
+        x: -186.9441851036331
+        y: 316.0701915835626
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        outputs:
+        - value_selector:
+          - '17553986203320'
+          - url
+          value_type: string
+          variable: url
+        selected: false
+        title: 结束 2
+        type: end
+      height: 90
+      id: '1755399316678'
+      position:
+        x: 1652.9107761540793
+        y: 118.13340637245705
+      positionAbsolute:
+        x: 1652.9107761540793
+        y: 118.13340637245705
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: -744.4661961055946
+      y: 429.71220730093415
+      zoom: 0.7772031217786937
