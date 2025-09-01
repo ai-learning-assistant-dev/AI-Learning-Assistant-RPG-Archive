@@ -21,3 +21,4 @@ class HealthCheck(BaseModel):
 
 class ChatRequest(BaseModel):
     message: str
+    stream: bool = False

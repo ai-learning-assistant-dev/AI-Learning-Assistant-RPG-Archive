@@ -26,8 +26,24 @@ class LLM(BaseModel):
                         line = line[6:]
                         if line == "[DONE]":
                             break
-                        chunk = LLMResponse.model_validate_json(line)
-                        yield chunk
+                        yield line
+        except Exception as e:
+            logger.error(f"LLM request error: {e}")
+            raise e
+
+    async def acall(self, request: LLMRequest) -> LLMResponse:
+        header = {
+            "Authorization": f"Bearer {self.config.api_key}",
+            "Content-Type": "application/json",
+        }
+        data = request.model_dump_json()
+        url = self.config.url + "/chat/completions"
+        try:
+            async with get_http_client().post(url, headers=header, data=data) as response:
+                if response.status != 200:
+                    raise Exception(f"LLM request error: {response.status}")
+                data = await response.json()
+            return LLMResponse.model_validate(data)
         except Exception as e:
             logger.error(f"LLM request error: {e}")
             raise e

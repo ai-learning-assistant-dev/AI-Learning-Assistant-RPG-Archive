@@ -1,6 +1,8 @@
+from typing import AsyncGenerator
+
 from pydantic import BaseModel, Field
 
-from app.models.llm import LLMRequest
+from app.models.llm import LLMRequest, LLMResponse
 from app.utils.llm_client import LLM
 from app.utils.logger import logger
 from config.settings import settings
@@ -9,7 +11,18 @@ from config.settings import settings
 class ChatChain(BaseModel):
     llm: LLM = Field(default_factory=lambda: LLM(config=settings.base_llm))
 
-    async def acall(self, user_message: str):
+    async def acall(self, user_message: str) -> LLMResponse:
+        request = LLMRequest(
+            model=settings.base_llm.model_name,
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": user_message},
+            ],
+            stream=False,
+        )
+        return await self.llm.acall(request)
+
+    async def astream(self, user_message: str) -> AsyncGenerator[str, None]:
         request = LLMRequest(
             model=settings.base_llm.model_name,
             messages=[
@@ -18,5 +31,7 @@ class ChatChain(BaseModel):
             ],
             stream=True,
         )
-        async for chunk in self.llm.astream(request):
-            logger.info(chunk)
+        async for line in self.llm.astream(request):
+            logger.debug(f"line: {line}")
+            yield f"data: {line}\n\n"
+        yield "data: [DONE]\n\n"
