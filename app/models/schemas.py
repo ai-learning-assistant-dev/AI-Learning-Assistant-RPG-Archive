@@ -3,14 +3,15 @@ Pydantic schemas for request and response models.
 """
 
 from datetime import datetime
-from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+from app.models.card import CharacterCardV3
 
 
 class ErrorResponse(BaseModel):
     msg: str
-    detail: Optional[str] = None
+    detail: str | None = None
 
 
 class HealthCheck(BaseModel):
@@ -22,3 +23,11 @@ class HealthCheck(BaseModel):
 class ChatRequest(BaseModel):
     message: str
     stream: bool = False
+
+
+class CraftCardRequest(BaseModel):
+    query: str = Field(..., description="The query to describe card")
+
+
+class CraftCardResponse(BaseModel):
+    card: CharacterCardV3 | None = None

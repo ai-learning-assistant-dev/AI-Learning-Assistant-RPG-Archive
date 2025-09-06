@@ -1,37 +1,41 @@
-from typing import AsyncGenerator
+from typing import AsyncGenerator, override
 
-from pydantic import BaseModel, Field
-
+from app.agent.base_agent import BaseAgent
 from app.models.llm import LLMRequest, LLMResponse
-from app.utils.llm_client import LLM
 from app.utils.logger import logger
-from config.settings import settings
+from app.utils.model_config import AgentConfig
 
 
-class ChatChain(BaseModel):
-    llm: LLM = Field(default_factory=lambda: LLM(config=settings.base_llm))
+class ChatAgent(BaseAgent):
+    """
+    Chat agent for LLM-based agents.
+    简单的对话，支持流式和非流式，主要用于测试
+    """
 
+    def __init__(self, agent_config: AgentConfig):
+        super().__init__(agent_config)
+
+    @override
     async def acall(self, user_message: str) -> LLMResponse:
         request = LLMRequest(
-            model=settings.base_llm.model_name,
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": user_message},
             ],
             stream=False,
         )
-        return await self.llm.acall(request)
+        return await self.llm_client.acall(request)
 
+    @override
     async def astream(self, user_message: str) -> AsyncGenerator[str, None]:
         request = LLMRequest(
-            model=settings.base_llm.model_name,
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": user_message},
             ],
             stream=True,
         )
-        async for line in self.llm.astream(request):
+        async for line in self.llm_client.astream(request):
             logger.debug(f"line: {line}")
             yield f"data: {line}\n\n"
         yield "data: [DONE]\n\n"

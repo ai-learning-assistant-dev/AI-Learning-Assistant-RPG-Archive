@@ -1,6 +1,6 @@
 """
 Pydantic models for sillytavern character card
-
+酒馆角色卡格式
 """
 
 from typing import Any, Dict, List, Optional
@@ -94,7 +94,7 @@ class Data(BaseModel):
     character_book: CharacterBook
 
 
-class CharaCardV3(BaseModel):
+class CharacterCardV3(BaseModel):
     name: str
     first_mes: str
     talkativeness: str

@@ -2,16 +2,8 @@
 Application configuration settings.
 """
 
-from functools import lru_cache
-
-from pydantic import BaseModel, Field
+from pydantic import Field
 from pydantic_settings import BaseSettings
-
-
-class LLMConfig(BaseModel):
-    url: str = Field(default="http://localhost:1234/v1")
-    api_key: str = Field(default="")
-    model_name: str = Field(default="")
 
 
 class Settings(BaseSettings):
@@ -23,7 +15,6 @@ class Settings(BaseSettings):
     debug: bool = Field(default=False)
     host: str = Field(default="0.0.0.0")
     port: int = Field(default=3000)
-    base_llm: LLMConfig = Field(default=LLMConfig())
 
     # Logging
     log_level: str = Field(default="INFO")
@@ -35,7 +26,6 @@ class Settings(BaseSettings):
         case_sensitive = False
 
 
-@lru_cache()
 def get_settings() -> Settings:
     """Get cached application settings."""
     return Settings()
