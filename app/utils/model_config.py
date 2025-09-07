@@ -52,8 +52,8 @@ class ConfigError(Exception):
 
 
 class Config(BaseModel):
-    model_providers: dict[str, ModelProvider]
-    models: dict[str, ModelConfig]
+    model_providers: dict[str, ModelProvider] | None = None
+    models: dict[str, ModelConfig] | None = None
 
     @classmethod
     def create(cls, *, config_file: str | None = None) -> "Config":

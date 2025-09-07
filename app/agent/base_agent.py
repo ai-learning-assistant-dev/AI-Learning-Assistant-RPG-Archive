@@ -24,5 +24,5 @@ class BaseAgent(BaseModel, ABC):
         pass
 
     @abstractmethod
-    def astream(self, user_message: str) -> AsyncGenerator[str, None]:
+    async def astream(self, user_message: str) -> AsyncGenerator[str, None]:
         pass
