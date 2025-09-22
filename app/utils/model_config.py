@@ -22,9 +22,6 @@ class ModelConfig(BaseModel):
     model: str = ""
     model_provider: ModelProvider = ModelProvider()
     max_tokens: int = 4096
-    temperature: float = 0.7
-    top_p: float = 0.7
-    top_k: int = 0
 
 
 class MCPServerConfig(BaseModel):

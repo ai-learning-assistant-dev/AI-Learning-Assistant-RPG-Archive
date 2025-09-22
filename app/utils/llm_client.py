@@ -69,12 +69,6 @@ class LLMClient(BaseModel):
     def _build_request(self, request: LLMRequest) -> LLMRequest:
         if request.model is None:
             request.model = self.config.model
-        if request.temperature is None:
-            request.temperature = self.config.temperature
         if request.max_tokens is None:
             request.max_tokens = self.config.max_tokens
-        if request.top_p is None:
-            request.top_p = self.config.top_p
-        if request.top_k is None:
-            request.top_k = self.config.top_k
         return request
