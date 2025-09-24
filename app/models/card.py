@@ -3,13 +3,33 @@ Pydantic models for sillytavern character card
 酒馆角色卡格式
 """
 
+from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+
+class ResearchStage(str, Enum):
+    """研究阶段"""
+
+    INITIALIZATION = "initialization"
+    CLARIFICATION = "clarification"
+    FINAL_REPORT = "final_report"
+    COMPLETED = "completed"
+
+
+class CraftStreamingEvent(BaseModel):
+    """制作角色卡的流式事件"""
+
+    type: str = Field(
+        ..., description="Event type (stage_start, stage_update, stage_complete, etc.)"
+    )
+    stage: Optional[ResearchStage] = Field(None, description="Current research stage")
+    content: str = Field(..., description="Event content or message")
+    timestamp: str = Field(..., description="ISO timestamp of the event")
+
 
 # 酒馆数据
-
-
 class RegexScript(BaseModel):  # 正则
     id: str
     scriptName: str

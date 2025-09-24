@@ -10,6 +10,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from app.api.agents import router as agents_router
 from app.models.schemas import ErrorResponse, HealthCheck
 from app.utils.http_client import init_http_client
 from app.utils.logger import logger
@@ -93,6 +94,10 @@ async def health_check():
         timestamp=datetime.now(),
         version=settings.app_version,
     )
+
+
+# Include API routers
+app.include_router(agents_router, prefix="/api/agents", tags=["agents"])
 
 
 if __name__ == "__main__":
