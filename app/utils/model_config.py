@@ -49,8 +49,8 @@ class ConfigError(Exception):
 
 
 class Config(BaseModel):
-    model_providers: dict[str, ModelProvider] | None = None
-    models: dict[str, ModelConfig] | None = None
+    model_providers: dict[str, ModelProvider] = {}
+    models: dict[str, ModelConfig] = {}
 
     @classmethod
     def create(cls, *, config_file: str | None = None) -> "Config":
@@ -94,4 +94,4 @@ class Config(BaseModel):
         return config
 
 
-model_config = Config.create(config_file="llm_config.yaml")
+modelSet = Config.create(config_file="llm_config.yaml")

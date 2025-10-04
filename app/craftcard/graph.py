@@ -1,30 +1,45 @@
-import operator
-from typing import Annotated, Optional
+from langchain_core.messages import AIMessage, HumanMessage, get_buffer_string
+from langchain_core.runnables import RunnableConfig
+from langchain_openai import ChatOpenAI
+from langgraph.graph import END, StateGraph
+from langgraph.types import Command
 
-from langchain_core.messages import MessageLikeRepresentation
-from langgraph.graph import MessagesState, StateGraph
+from ..utils.model_config import modelSet
+from .configuration import Configuration
+from .prompts import clarify_intension_prompt
+from .state import AgentInputState, AgentState, ClarifyIntension
 
 
-def override_reducer(current_value, new_value):
-    """Reducer function that allows overriding values in state."""
-    if isinstance(new_value, dict) and new_value.get("type") == "override":
-        return new_value.get("value", new_value)
+async def clarify_intension(state: AgentState, config: RunnableConfig):
+    configurable = Configuration.from_runnable_config(config)
+    messages = state["messages"]
+    model_config = modelSet.models[configurable.common_model]
+    if model_config is None:
+        raise ValueError("model not found")
+    model = ChatOpenAI(
+        openai_api_key=model_config.model_provider.api_key,
+        openai_api_base=model_config.model_provider.base_url,
+        model_name=model_config.model,
+    )
+    clarification_model = model.with_structured_output(ClarifyIntension).with_retry(2)
+    prompt_content = clarify_intension_prompt.format(
+        messages=get_buffer_string(messages)
+    )
+
+    resp = await clarification_model.ainvoke([HumanMessage(content=prompt_content)])
+
+    if resp.need_clarification:
+        return Command(
+            goto=END, update={"messages": [AIMessage(content=resp.question)]}
+        )
     else:
-        return operator.add(current_value, new_value)
-
-
-class AgentInputState(MessagesState):
-    """only messages"""
-
-
-class AgentState(MessagesState):
-    """Main agent state containing messages and research data."""
-
-    supervisor_messages: Annotated[list[MessageLikeRepresentation], override_reducer]
-    research_brief: Optional[str]
-    raw_notes: Annotated[list[str], override_reducer] = []
-    notes: Annotated[list[str], override_reducer] = []
-    final_report: str
+        return Command(
+            goto="supervisor",
+            update={
+                "messages": [AIMessage(content=resp.question)],
+                "story_brief": resp.verification,
+            },
+        )
 
 
 card_flow_builder = StateGraph(
