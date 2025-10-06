@@ -49,3 +49,12 @@ For the verification message when no clarification is needed:
 {messages}
 </Messages>
 """
+
+supervisor_prompt = """
+你是一名剧本总编辑，你的工作是充分理解用户的需求，调用提供给你的一系列工具，完成出色的剧本设计工作，实现精彩的演出效果。
+<Task>
+
+</Task>
+
+
+"""

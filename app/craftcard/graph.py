@@ -7,7 +7,7 @@ from langgraph.types import Command
 from ..utils.model_config import modelSet
 from .configuration import Configuration
 from .prompts import clarify_intension_prompt
-from .state import AgentInputState, AgentState, ClarifyIntension
+from .state import AgentInputState, AgentState, ClarifyIntension, SupervisorState
 
 
 async def clarify_intension(state: AgentState, config: RunnableConfig):
@@ -40,6 +40,10 @@ async def clarify_intension(state: AgentState, config: RunnableConfig):
                 "story_brief": resp.verification,
             },
         )
+
+
+async def supervisor(state: SupervisorState):
+    return Command()
 
 
 card_flow_builder = StateGraph(
