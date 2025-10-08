@@ -1,10 +1,7 @@
 import operator
-from typing import Annotated, Optional
 
-from langchain_core.messages import MessageLikeRepresentation
 from langgraph.graph import MessagesState
 from pydantic import BaseModel, Field
-from typing_extensions import TypedDict
 
 
 def override_reducer(current_value, new_value):
@@ -22,21 +19,11 @@ class AgentInputState(MessagesState):
 class AgentState(MessagesState):
     """Main agent state containing messages and research data."""
 
-    supervisor_messages: Annotated[list[MessageLikeRepresentation], override_reducer]
-    story_brief: Optional[str]
-    raw_notes: Annotated[list[str], override_reducer] = []
-    notes: Annotated[list[str], override_reducer] = []
-    final_report: str
-
-
-class SupervisorState(TypedDict):
-    """State for the supervisor that manages research tasks."""
-
-    supervisor_messages: Annotated[list[MessageLikeRepresentation], override_reducer]
-    research_brief: str
-    notes: Annotated[list[str], override_reducer]
-    research_iterations: int
-    raw_notes: Annotated[list[str], override_reducer]
+    query: str
+    playname: str
+    background: str
+    eventChain: dict[str, str]
+    character: dict[str, str]
 
 
 class ClarifyIntension(BaseModel):
@@ -50,4 +37,26 @@ class ClarifyIntension(BaseModel):
     )
     verification: str = Field(
         description="Verify message that we will start story after the user has provided the necessary information.",
+    )
+
+
+class PlayCoreResp(BaseModel):
+    """Model for play core response."""
+
+    name: str = Field(
+        description="剧本的名称，要求简洁明了，具有吸引力",
+    )
+    background: str = Field(
+        description="剧本的背景，交代故事发生的世界背景，故事背景，核心冲突，待解决的目标",
+    )
+    eventChain: list[dict[str, str]] = Field(
+        description="剧本的事件链，事件需要埋下线索，确保事件的逻辑自洽，确保事件的合理性，事件不少于6个",
+    )
+
+
+class TextExpandResp(BaseModel):
+    """Model for text expand response."""
+
+    text: str = Field(
+        description="事件文本的扩写",
     )
