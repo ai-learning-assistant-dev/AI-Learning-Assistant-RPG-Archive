@@ -1,5 +1,7 @@
 import operator
+from typing import Annotated
 
+from langchain_core.messages import MessageLikeRepresentation
 from langgraph.graph import MessagesState
 from pydantic import BaseModel, Field
 
@@ -23,7 +25,11 @@ class AgentState(MessagesState):
     playname: str
     background: str
     eventChain: dict[str, str]
-    character: dict[str, str]
+    loop_count: int = 0
+    should_continue: bool = True
+    writer_messages: Annotated[list[MessageLikeRepresentation], override_reducer]
+    final: str
+    final_card: "FinalResp"
 
 
 class ClarifyIntension(BaseModel):
@@ -54,9 +60,50 @@ class PlayCoreResp(BaseModel):
     )
 
 
-class TextExpandResp(BaseModel):
-    """Model for text expand response."""
+class SupervisorResp(BaseModel):
+    """Model for supervisor response."""
 
-    text: str = Field(
-        description="事件文本的扩写",
+    should_continue: bool = Field(
+        description="布尔值是否继续创作",
+    )
+    advice: str = Field(
+        description="具体的改进建议，使剧本更符合要求",
+    )
+
+
+class Character(BaseModel):
+    name: str = Field(
+        description="角色名称",
+    )
+    description: str = Field(
+        description="角色简介",
+    )
+
+
+class Event(BaseModel):
+    name: str = Field(
+        description="事件名称",
+    )
+    description: str = Field(
+        description="事件的详细描述",
+    )
+
+
+class FinalResp(BaseModel):
+    """Model for final response."""
+
+    first_msg: str = Field(
+        description="第一幕的文本",
+    )
+    alternate_msgs: list[str] = Field(
+        description="备选的第一幕文本",
+    )
+    main_character: Character = Field(
+        description="主角",
+    )
+    others: list[Character] = Field(
+        description="其他角色",
+    )
+    events: list[Event] = Field(
+        description="事件",
     )

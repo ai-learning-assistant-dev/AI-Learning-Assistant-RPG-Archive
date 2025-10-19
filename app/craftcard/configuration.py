@@ -11,6 +11,8 @@ class Configuration(BaseModel):
 
     common_model_provider: str = Field(default="")
 
+    max_loop_count: int = Field(default=3, description="最大ReAct次数")
+
     @classmethod
     def from_runnable_config(cls, config: RunnableConfig | None) -> "Configuration":
         configurable = config.get("configurable", {}) if config else {}
