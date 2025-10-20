@@ -12,7 +12,7 @@ from app.utils.logger import logger
 router = APIRouter()
 
 
-@router.get("/craftcard")
+@router.post("/craftcard")
 async def craftcard(request: CraftCardRequest):
     """
     根据query制作一张角色卡 , sse接口推送中间过程

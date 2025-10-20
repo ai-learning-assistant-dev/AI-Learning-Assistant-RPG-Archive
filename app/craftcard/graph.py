@@ -113,7 +113,7 @@ async def play_core(
 
 async def writer(
     state: AgentState, config: RunnableConfig
-) -> Command[Literal["play_complete" | "supervisor"]]:
+) -> Command[Literal["play_complete", "supervisor"]]:
     configurable = Configuration.from_runnable_config(config)
     model_config = modelSet.models[configurable.common_model]
     if model_config is None:
