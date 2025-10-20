@@ -20,7 +20,7 @@ class CraftcardAgent:
     """ 制作角色卡的agent """
 
     async def craftcard_stream(
-        self, query: str, config: Configuration
+        self, query: str, *, config: Configuration
     ) -> AsyncGenerator[CraftStreamingEvent, None]:
 
         yield CraftStreamingEvent(

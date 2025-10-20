@@ -43,13 +43,21 @@ async def clarify_intension(
         openai_api_base=model_config.model_provider.base_url,
         model_name=model_config.model,
     )
+
+    if configurable.clarify_enable is False:
+        return Command(
+            goto="play_core",
+            update={
+                "query": messages[-1],
+            },
+        )
+
     clarification_model = model.with_structured_output(ClarifyIntension).with_retry(2)
     prompt_content = clarify_intension_prompt.format(
         messages=get_buffer_string(messages)
     )
 
     resp = await clarification_model.ainvoke([HumanMessage(content=prompt_content)])
-
     if resp.need_clarification:
         return Command(
             goto=END, update={"messages": [AIMessage(content=resp.question)]}

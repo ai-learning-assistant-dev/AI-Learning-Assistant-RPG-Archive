@@ -4,12 +4,12 @@ from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
 from fastapi.responses import StreamingResponse
 
+from app.craftcard.configuration import Configuration
 from app.craftcard.craftcard_agent import CraftcardAgent
 from app.models.schemas import CraftCardRequest
 from app.utils.logger import logger
 
 router = APIRouter()
-craftcard_agent = CraftcardAgent()
 
 
 @router.get("/craftcard")
@@ -19,7 +19,11 @@ async def craftcard(request: CraftCardRequest):
     """
 
     async def craftcard_stream(request: CraftCardRequest):
-        async for event in craftcard_agent.craftcard_stream(request.query):
+        craftcard_agent = CraftcardAgent()
+        configure = Configuration(clarify_enable=False)
+        async for event in craftcard_agent.craftcard_stream(
+            request.query, config=configure
+        ):
             yield f"data: {event.model_dump_json()}\n\n"
         yield "data: [DONE]\n\n"
 

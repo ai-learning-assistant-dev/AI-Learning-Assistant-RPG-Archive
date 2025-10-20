@@ -13,6 +13,8 @@ class Configuration(BaseModel):
 
     max_loop_count: int = Field(default=3, description="最大ReAct次数")
 
+    clarify_enable: bool = Field(default=True, description="是否开启意图澄清")
+
     @classmethod
     def from_runnable_config(cls, config: RunnableConfig | None) -> "Configuration":
         configurable = config.get("configurable", {}) if config else {}
