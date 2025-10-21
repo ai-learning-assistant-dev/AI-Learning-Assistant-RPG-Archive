@@ -14,16 +14,16 @@ class ResearchStage(str, Enum):
 
     INITIALIZATION = "initialization"
     CLARIFICATION = "clarification"
-    FINAL_REPORT = "final_report"
-    COMPLETED = "completed"
+    PLAY_CORE = "outline"
+    WRITER = "writing"
+    SUPERVISOR = "reActing"
+    PLAY_COMPLETE = "complete"
+    EXECUTION = "execution"
 
 
 class CraftStreamingEvent(BaseModel):
     """制作角色卡的流式事件"""
 
-    type: str = Field(
-        ..., description="Event type (stage_start, stage_update, stage_complete, etc.)"
-    )
     stage: Optional[ResearchStage] = Field(None, description="Current research stage")
     content: str = Field(..., description="Event content or message")
     timestamp: str = Field(..., description="ISO timestamp of the event")

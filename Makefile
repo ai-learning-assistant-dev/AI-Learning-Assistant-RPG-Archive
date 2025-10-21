@@ -17,7 +17,7 @@ help:
 uv-venv:
 	uv venv
 uv-sync:
-	uv sync --all-extras
+	uv sync --all-groups
 install-dev: uv-venv uv-sync
 
 # Pre-commit commands

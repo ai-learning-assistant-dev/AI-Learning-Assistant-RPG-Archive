@@ -11,9 +11,9 @@ model_providers:
     provider:
 
 models:
-  craft_card_model:
+  deepseek-v3:
     model_provider: ark
-    model: deepseek-v3-250324
+    model: deepseek-v3-1-terminus
     max_tokens: 8192
     temperature: 0.7
     top_p: 0.7

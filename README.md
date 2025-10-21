@@ -11,8 +11,9 @@ ai跑团助手，根据输入query生成一张可以导入酒馆sillytavern的�
 
 2. 检查必要依赖
     - UV (一个python包管理器)
-    - python >= 3.12
-    - pre-commit
+    ```bash
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    ```
 
 3. 设置开发环境
     ```bash

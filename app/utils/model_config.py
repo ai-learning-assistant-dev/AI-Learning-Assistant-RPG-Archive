@@ -94,4 +94,4 @@ class Config(BaseModel):
         return config
 
 
-modelSet = Config.create(config_file="llm_config.yaml")
+modelSet = Config.create(config_file="./llm_config.yaml")

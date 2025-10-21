@@ -20,9 +20,11 @@ async def craftcard(request: CraftCardRequest):
 
     async def craftcard_stream(request: CraftCardRequest):
         craftcard_agent = CraftcardAgent()
-        configure = Configuration(clarify_enable=False)
+        configure = Configuration(
+            common_model="deepseek-v3", clarify_enable=False
+        ).model_dump()
         async for event in craftcard_agent.craftcard_stream(
-            request.query, config=configure
+            request.query, config_dict=configure
         ):
             yield f"data: {event.model_dump_json()}\n\n"
         yield "data: [DONE]\n\n"

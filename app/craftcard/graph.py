@@ -48,11 +48,13 @@ async def clarify_intension(
         return Command(
             goto="play_core",
             update={
-                "query": messages[-1],
+                "query": messages[-1].content,
             },
         )
 
-    clarification_model = model.with_structured_output(ClarifyIntension).with_retry(2)
+    clarification_model = model.with_structured_output(ClarifyIntension).with_retry(
+        stop_after_attempt=2
+    )
     prompt_content = clarify_intension_prompt.format(
         messages=get_buffer_string(messages)
     )
@@ -83,7 +85,9 @@ async def play_core(
         openai_api_base=model_config.model_provider.base_url,
         model_name=model_config.model,
     )
-    play_core_model = model.with_structured_output(PlayCoreResp).with_retry(2)
+    play_core_model = model.with_structured_output(PlayCoreResp).with_retry(
+        stop_after_attempt=2
+    )
     prompt_content = play_core_prompt.format(query=state["query"])
     play_core_resp = await play_core_model.ainvoke(
         [HumanMessage(content=prompt_content)]
@@ -123,25 +127,34 @@ async def writer(
         openai_api_base=model_config.model_provider.base_url,
         model_name=model_config.model,
     )
-    writer_model = model.with_retry(2)
-    writer_messages = state.get("writer_messages", [])
-    writer_resp = await writer_model.ainvoke(writer_messages)
     loop_count = state.get("loop_count", 0)
     should_continue = state.get("should_continue", True)
-    if loop_count < configurable.max_loop_count or not should_continue:
+    writer_messages = state.get("writer_messages", [])
+    if not should_continue:
+        return Command(
+            goto="play_complete",
+            update={
+                "final": writer_messages[-1].content,
+            },
+        )
+
+    writer_model = model.with_retry(stop_after_attempt=2)
+    writer_resp = await writer_model.ainvoke(writer_messages)
+
+    if loop_count < configurable.max_loop_count and should_continue:
         return Command(
             goto="supervisor",
             update={
                 "loop_count": loop_count + 1,
-                "writer_messages": [AIMessage(content=writer_resp)],
+                "writer_messages": [writer_resp],
             },
         )
     else:
         return Command(
             goto="play_complete",
             update={
-                "writer_messages": [AIMessage(content=writer_resp)],
-                "final": writer_resp,
+                "writer_messages": [writer_resp],
+                "final": writer_resp.content,
             },
         )
 
@@ -158,16 +171,18 @@ async def supervisor(
         openai_api_base=model_config.model_provider.base_url,
         model_name=model_config.model,
     )
-    supervisor_messages = state.get("supervisor_messages", [])
-    most_recent_message = supervisor_messages[-1]
-    supervisor_model = model.with_structured_output(SupervisorResp).with_retry(2)
+    writer_messages = state.get("writer_messages", [])
+    most_recent_message = writer_messages[-1]
+    supervisor_model = model.with_structured_output(SupervisorResp).with_retry(
+        stop_after_attempt=2
+    )
     prompt_content = supervisor_prompt.format(messages=most_recent_message)
     supervisor_resp = await supervisor_model.ainvoke(prompt_content)
 
     return Command(
         goto="writer",
         update={
-            "supervisor_messages": [HumanMessage(content=supervisor_resp.advice)],
+            "writer_messages": [HumanMessage(content=supervisor_resp.advice)],
             "should_continue": supervisor_resp.should_continue,
         },
     )
@@ -188,7 +203,9 @@ async def play_complete(
     final = state.get("final", None)
     if final is None:
         raise ValueError("final not found")
-    final_model = model.with_structured_output(FinalResp).with_retry(2)
+    final_model = model.with_structured_output(FinalResp).with_retry(
+        stop_after_attempt=2
+    )
     prompt_content = final_output_prompt.format(text=final)
     final_card = await final_model.ainvoke(prompt_content)
     return Command(
@@ -212,10 +229,6 @@ card_flow_builder.add_node("supervisor", supervisor)
 card_flow_builder.add_node("play_complete", play_complete)
 
 card_flow_builder.add_edge(START, "clarify_intension")
-card_flow_builder.add_edge("clarify_intension", "play_core")
-card_flow_builder.add_edge("play_core", "writer")
-card_flow_builder.add_edge("writer", "supervisor")
-card_flow_builder.add_edge("writer", "play_complete")
 card_flow_builder.add_edge("play_complete", END)
 
 card_flow = card_flow_builder.compile()

@@ -18,25 +18,19 @@ clarify_intension_prompt = """
 ##人物是否有动机、职业、性格特征或潜在目标？
 
 请严格遵循下列JSON格式输出，不添加其他内容
-{
 "need_clarification":boolean,
 "question":"向用户提问的问题，用于获取更加充分的故事信息"
 "verification":"充分的故事背景，有足够深度的，富有现实张力的核心文本"
-}
 输出示例
 如果你需要问一个问题，输出：
-{
 "need_clarification": true,
 "question":"<澄清故事背景的问题>",
 "verification":""
-}
 
 如果你不需要问一个问题，当前获取的信息已经足够输出：
-{
 "need_clarification":false,
 "question":"<回复用户的一句话，用于表示已收集信息足够进行下一步生成，一句话复述用户要求，一句话表示将要生成的故事背景>",
 "verification":"<基于用户提供文本和补充信息的故事背景,需要尽量遵循用户原意,需要对各方力量做详细的背景介绍>"
-}
 
 For the verification message when no clarification is needed:
 - Acknowledge that you have sufficient information to proceed
@@ -55,21 +49,17 @@ play_core_prompt = """
 基于用户提供的核心文本，设计具象化社会矛盾的沉浸式跑团剧本。
 提炼出核心冲突，事件需要埋下线索，确保事件的逻辑自洽，确保事件的合理性。
 基于上述文本和用户输入，你将创造一个事件性的跑团剧本。
-严格遵循下列JSON格式输出，不添加其他内容
-{
-    "name": string,
-    "background": string,
-    "eventChain": [
-        "name": "事件名称",
-        "text": "事件文本",
-    ]
-}
+严格返回JSON格式能够被反序列化的，不要使用markdown返回
+"name": string,
+"background": string,
+"eventChain": [
+    "name": "事件名称",
+    "text": "事件文本",
+]
 字段解释：
-{
 "name": "跑团剧本名称"
 "background": "故事背景，包括核心冲突和待解决的目标，如果用户指定了要扮演的角色，使用第二人称来指定玩家扮演的角色",
 "eventChain": "事件链，事件需要埋下线索，确保事件的逻辑自洽，确保事件的合理性，事件不少于6个",
-}
 
 以下是用户提供的核心文本：
 <Messages>
@@ -109,15 +99,11 @@ supervisor_prompt = """
 {messages}
 </Messages>
 严格遵循下列JSON格式输出，不添加其他内容
-{
     "should_continue": boolean,
     "advice": string,
-}
 字段解释：
-{
 "should_continue": 布尔值是否继续创作
 "advice": 具体的改进建议，使剧本更符合要求
-}
 """
 
 
@@ -126,9 +112,7 @@ text_expand_prompt = """
 事件扩写的逻辑、文风要保持一致，要有文采
 字数超过300字，需要有小说描写故事的那种感觉
 严格遵循下列JSON格式输出，不添加其他内容
-{
     "text": "事件文本的扩写",
-}
 以下是背景信息
 <Background>
 {background}
@@ -144,28 +128,21 @@ final_output_prompt = """
 需要生成不少于3个第一幕文本，每个第一幕文本需要有不同的情节发展，生成的文本要具有沉浸感，且文本的结束是轮到主角做出选择。
 需要生成主角，主角的基本信息描述，其他角色，事件的详细描述
 严格遵循下列JSON格式输出，不添加其他内容
-{
     "first_msg":"第一幕的文本",
     "alternate_msgs":[
         "备选的第一幕文本",
     ],
-    "main_character": {
+    "main_character":
         "name": "主角名称",
         "description": "主角简介",
-    },
     "others": [
-        {
-            "name": "其他角色名称",
-            "description": "其他角色简介",
-        },
+        "name": "其他角色名称",
+        "description": "其他角色简介",,
     ],
     "events": [
-        {
-            "name": "事件名称",
-            "description": "事件的详细描述",
-        },
+        "name": "事件名称",
+        "description": "事件的详细描述",
     ],
-}
 
 以下是故事文本
 <Text>
