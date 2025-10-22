@@ -11,8 +11,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api.agents import router as agents_router
+from app.api.store import router as stores_router
 from app.models.schemas import ErrorResponse, HealthCheck
-from app.utils.http_client import init_http_client
+from app.services.store_service import store_service
+from app.utils.http_client import close_http_client, init_http_client
 from app.utils.logger import logger
 from config.settings import settings
 
@@ -25,13 +27,15 @@ async def lifespan(app: FastAPI):
     # Initialize services
     try:
         init_http_client()
+        await store_service.init()
         logger.info("LLM service is available")
 
     except Exception as e:
         logger.error(f"Error during service initialization: {e}")
 
     yield
-
+    await store_service.close()
+    await close_http_client()
     logger.info("Shutting down AI Learning Assistant RPG application")
 
 
@@ -98,6 +102,7 @@ async def health_check():
 
 # Include API routers
 app.include_router(agents_router, prefix="/api/agents", tags=["agents"])
+app.include_router(stores_router, prefix="/api/store", tags=["store"])
 
 
 if __name__ == "__main__":

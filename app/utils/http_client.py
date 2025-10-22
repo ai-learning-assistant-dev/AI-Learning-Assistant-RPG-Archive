@@ -19,3 +19,10 @@ def get_http_client() -> ClientSession:
             "HTTP client not initialized. Call init_http_client() first."
         )
     return http_client
+
+
+async def close_http_client():
+    """Close the HTTP client instance."""
+    global http_client
+    if http_client is not None:
+        await http_client.close()
