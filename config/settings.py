@@ -19,12 +19,8 @@ class Settings(BaseSettings):
     # Logging
     log_level: str = Field(default="INFO")
 
-    # pgsql
-    pg_host: str = Field(default="localhost")
-    pg_port: int = Field(default=5432)
-    pg_user: str = Field(default="user")
-    pg_password: str = Field(default="123456")
-    pg_database: str = Field(default="ai_rpg")
+    # SQLite
+    database_path: str = Field(default="./app.db")
 
     class Config:
         env_file = ".env"
