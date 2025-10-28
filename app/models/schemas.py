@@ -6,8 +6,6 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
-from app.models.card import CharacterCardV3
-
 
 class ErrorResponse(BaseModel):
     msg: str
@@ -29,5 +27,7 @@ class CraftCardRequest(BaseModel):
     query: str = Field(..., description="The query to describe card")
 
 
-class CraftCardResponse(BaseModel):
-    card: CharacterCardV3 | None = None
+class StreamEvent(BaseModel):
+    session_id: str = Field(..., description="Session ID")
+    conversation_id: str = Field(..., description="Conversation ID")
+    parent_id: str = Field(default="", description="Parent conversation ID")

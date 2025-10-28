@@ -17,18 +17,6 @@ async def craftcard(request: CraftCardRequest):
     """
     根据query制作一张角色卡 , sse接口推送中间过程
     """
-
-    async def craftcard_stream(request: CraftCardRequest):
-        craftcard_agent = CraftcardAgent()
-        configure = Configuration(
-            common_model="deepseek-v3", clarify_enable=False
-        ).model_dump()
-        async for event in craftcard_agent.craftcard_stream(
-            request.query, config_dict=configure
-        ):
-            yield f"data: {event.model_dump_json()}\n\n"
-        yield "data: [DONE]\n\n"
-
     try:
         return StreamingResponse(
             craftcard_stream(request), media_type="text/event-stream"
@@ -41,3 +29,15 @@ async def craftcard(request: CraftCardRequest):
             }
         )
         raise HTTPException(status_code=500, detail=str(e)) from e
+
+
+async def craftcard_stream(request: CraftCardRequest):
+    craftcard_agent = CraftcardAgent()
+    configure = Configuration(
+        common_model="deepseek-v3", clarify_enable=False
+    ).model_dump()
+    async for event in craftcard_agent.craftcard_stream(
+        request.query, config_dict=configure
+    ):
+        yield f"data: {event.model_dump_json()}\n\n"
+    yield "data: [DONE]\n\n"
