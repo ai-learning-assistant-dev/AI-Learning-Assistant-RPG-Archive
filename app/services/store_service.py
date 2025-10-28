@@ -25,6 +25,7 @@ class StoreService:
                 CREATE TABLE IF NOT EXISTS session (
                     id TEXT PRIMARY KEY,
                     title TEXT NOT NULL,
+                    type TEXT NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
                 """

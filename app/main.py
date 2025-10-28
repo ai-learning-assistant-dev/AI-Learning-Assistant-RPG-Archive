@@ -6,13 +6,13 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api.agents import router as agents_router
 from app.api.store import router as stores_router
-from app.models.schemas import ErrorResponse, HealthCheck
+from app.models.schemas import BaseResponse, HealthCheck
 from app.services.store_service import store_service
 from app.utils.http_client import close_http_client, init_http_client
 from app.utils.logger import logger
@@ -34,7 +34,6 @@ async def lifespan(app: FastAPI):
         logger.error(f"Error during service initialization: {e}")
 
     yield
-    await store_service.close()
     await close_http_client()
     logger.info("Shutting down AI Learning Assistant RPG application")
 
@@ -62,29 +61,16 @@ app.add_middleware(
 )
 
 
-# Exception handlers
-@app.exception_handler(HTTPException)
-async def http_exception_handler(request, exc: HTTPException):
-    """Handle HTTP exceptions."""
-    return JSONResponse(
-        status_code=exc.status_code,
-        content=ErrorResponse(
-            error=exc.detail,
-            timestamp=datetime.now(),
-            error_code=f"HTTP_{exc.status_code}",
-        ).model_dump(),
-    )
-
-
 @app.exception_handler(Exception)
-async def general_exception_handler(request, exc: Exception):
+async def general_exception_handler(request: Request, exc: Exception):
     """Handle general exceptions."""
     logger.error(f"Unhandled exception: {exc}", exc_info=True)
     return JSONResponse(
         status_code=500,
-        content=ErrorResponse(
-            msg="Internal server error",
-            detail=str(exc) if settings.debug else None,
+        content=BaseResponse.error(
+            code=500,
+            message="Internal server error",
+            data={"detail": str(exc) if settings.debug else None},
         ).model_dump(),
     )
 
