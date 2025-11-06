@@ -2,7 +2,7 @@ import time
 from datetime import datetime
 from typing import Any, AsyncGenerator
 
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import BaseMessage
 from langchain_core.runnables import RunnableConfig
 
 from app.craftcard.graph import card_flow
@@ -15,7 +15,7 @@ class CraftcardAgent:
     """制作角色卡的agent"""
 
     async def craftcard_stream(
-        self, query: list[str], *, config_dict: dict, session_id: str
+        self, query: list[dict], *, config_dict: dict, session_id: str
     ) -> AsyncGenerator[CraftStreamingEvent, None]:
         """
         主流程异步迭代器
@@ -29,9 +29,14 @@ class CraftcardAgent:
             timestamp=datetime.now().isoformat(),
         )
 
-        logger.info("Craftcard initial", extra={"session_id": session_id})
+        messages = [
+            BaseMessage(content=msg["content"], type=msg["type"]) for msg in query
+        ]
+        logger.info(
+            "Craftcard initial", extra={"session_id": session_id, "msglist": messages}
+        )
 
-        input_state = AgentInputState(messages=[HumanMessage(content=query)])
+        input_state = AgentInputState(messages=messages)
         config = RunnableConfig(configurable=config_dict)
         node_count = 0
         chunk_start_time = time.time()
@@ -91,7 +96,7 @@ class CraftcardAgent:
                         content += f"\n剧本名称: {name}\n背景: {background}\n"
                         for idx, event in enumerate(event_chain, start=1):
                             event_desc = event.get("name", "未知事件")
-                            content += f"   {idx}. {event_desc}\n"
+                            content += f"   {idx}. {event_desc}"
                 case ResearchStage.WRITER:
                     content = "✍️ 剧本撰写中..."
                     if isinstance(node_data, dict) and "final" in node_data:
@@ -101,13 +106,13 @@ class CraftcardAgent:
                         content += "\n剧本内容正在生成中..."
                 case ResearchStage.SUPERVISOR:
                     content = "🛡️ 反思检查中..."
-                    if isinstance(node_data, dict) and "writer_messages" in node_data:
-                        advice = (
-                            node_data["writer_messages"][-1].content
-                            if "writer_messages" in node_data
-                            else "无改进建议"
-                        )
-                        content += f"\n改进建议:\n{advice}"
+                    # if isinstance(node_data, dict) and "writer_messages" in node_data:
+                    #     advice = (
+                    #         node_data["writer_messages"][-1].content
+                    #         if "writer_messages" in node_data
+                    #         else "无改进建议"
+                    #     )
+                    #     content += f"\n改进建议:\n{advice}"
                 case ResearchStage.PLAY_COMPLETE:
                     content = "✅ 角色卡制作完成!"
                 case ResearchStage.EXECUTION:

@@ -7,7 +7,6 @@ from typing import Any, Callable, Generic, Optional, TypeVar
 
 from pydantic import BaseModel, Field
 
-from .card import CraftStreamingEvent
 from .store import Session
 
 T = TypeVar("T")
@@ -64,9 +63,7 @@ class StreamEvent(BaseModel):
     session_id: str = Field(..., description="Session ID")
     conversation_id: str = Field(..., description="Conversation ID")
     parent_id: str = Field(default="", description="Parent conversation ID")
-    data: CraftStreamingEvent = Field(
-        default_factory=CraftStreamingEvent, description="Streaming event data"
-    )
+    data: dict[str, Any] = Field(default_factory=dict, description="Event data")
 
 
 class SessionListRequest(BaseModel):

@@ -35,7 +35,7 @@ class StoreService:
                 CREATE TABLE IF NOT EXISTS conversation (
                     id TEXT PRIMARY KEY,
                     parent_cid TEXT DEFAULT '',
-                    session_id TEXT NOT NULL,s
+                    session_id TEXT NOT NULL,
                     content TEXT NOT NULL,
                     type TEXT NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -135,6 +135,16 @@ class StoreService:
                 with suppress(KeyError):
                     data["content"] = data["content"].decode("utf-8")
             return data
+
+    async def update_conversation(self, conversation_id: str, content: str) -> bool:
+        """Update conversation content. Returns True if a row was updated."""
+        async with aiosqlite.connect(self._db_path) as db:
+            cursor = await db.execute(
+                "UPDATE conversation SET content = ? WHERE id = ?",
+                (content, conversation_id),
+            )
+            await db.commit()
+            return cursor.rowcount > 0
 
     async def list_conversations(
         self, session_id: str, limit: int = 100, offset: int = 0

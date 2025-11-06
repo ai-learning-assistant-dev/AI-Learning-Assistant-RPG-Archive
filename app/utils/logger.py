@@ -3,6 +3,7 @@ import logging
 import sys
 from datetime import datetime
 
+from app.utils.middleware import get_request_id
 from config.settings import settings
 
 
@@ -12,6 +13,7 @@ class JSONFormatter(logging.Formatter):
             "timestamp": datetime.fromtimestamp(record.created).isoformat(),
             "level": record.levelname,
             "message": record.getMessage(),
+            "request_id": get_request_id(),
         }
 
         # 添加异常信息（如果存在）

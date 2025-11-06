@@ -10,8 +10,8 @@ class SessionType(str, Enum):
 
 
 class ConversationType(str, Enum):
-    USER = "user"
-    AGENT = "agent"
+    HUMAN = "human"
+    AI = "ai"
 
 
 class Session(BaseModel):
@@ -28,7 +28,7 @@ class Conversation(BaseModel):
     session_id: str = Field(
         ..., description="Identifier of the session this conversation belongs to"
     )
-    content: dict = Field(default={}, description="Content of the conversation")
+    content: str = Field(..., description="Content of the conversation")
     type: str = Field(..., description="Type of the conversation")
     created_at: str = Field(
         ..., description="ISO timestamp when the conversation was created"

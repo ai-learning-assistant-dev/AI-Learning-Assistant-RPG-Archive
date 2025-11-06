@@ -12,6 +12,7 @@ from fastapi.responses import JSONResponse
 
 from app.api.agents import router as agents_router
 from app.api.store import router as stores_router
+from app.middleware.request_id import RequestIDMiddleware
 from app.models.schemas import BaseResponse, HealthCheck
 from app.services.store_service import store_service
 from app.utils.http_client import close_http_client, init_http_client
@@ -46,6 +47,9 @@ app = FastAPI(
     debug=settings.debug,
     lifespan=lifespan,
 )
+
+# Add Request ID middleware (should be added first to ensure it's available for all requests)
+app.add_middleware(RequestIDMiddleware)
 
 # Add CORS middleware
 app.add_middleware(
