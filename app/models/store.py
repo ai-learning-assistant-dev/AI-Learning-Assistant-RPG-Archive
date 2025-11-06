@@ -9,6 +9,11 @@ class SessionType(str, Enum):
     OTHER = "other"
 
 
+class ConversationType(str, Enum):
+    USER = "user"
+    AGENT = "agent"
+
+
 class Session(BaseModel):
     id: str = Field(..., description="Unique identifier for the session")
     title: str = Field(..., description="Title of the session")

@@ -1,5 +1,4 @@
 import time
-import uuid
 from datetime import datetime
 from typing import Any, AsyncGenerator
 
@@ -16,7 +15,7 @@ class CraftcardAgent:
     """制作角色卡的agent"""
 
     async def craftcard_stream(
-        self, query: str, *, config_dict: dict
+        self, query: list[str], *, config_dict: dict, session_id: str
     ) -> AsyncGenerator[CraftStreamingEvent, None]:
         """
         主流程异步迭代器
@@ -30,7 +29,6 @@ class CraftcardAgent:
             timestamp=datetime.now().isoformat(),
         )
 
-        session_id = str(uuid.uuid4())
         logger.info("Craftcard initial", extra={"session_id": session_id})
 
         input_state = AgentInputState(messages=[HumanMessage(content=query)])

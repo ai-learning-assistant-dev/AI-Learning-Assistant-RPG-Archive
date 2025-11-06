@@ -7,8 +7,8 @@ from typing import Any, Callable, Generic, Optional, TypeVar
 
 from pydantic import BaseModel, Field
 
-from app.models.card import CharacterCardV3
-from app.models.store import Session
+from .card import CraftStreamingEvent
+from .store import Session
 
 T = TypeVar("T")
 
@@ -54,12 +54,19 @@ class ChatRequest(BaseModel):
 
 class CraftCardRequest(BaseModel):
     query: str = Field(..., description="The query to describe card")
+    session_id: str = Field(..., description="The session ID")
+    parent_cid: str = Field(default="", description="Parent conversation ID")
+    model: str = Field(default="default", description="The model to use")
 
 
 class StreamEvent(BaseModel):
+
     session_id: str = Field(..., description="Session ID")
     conversation_id: str = Field(..., description="Conversation ID")
     parent_id: str = Field(default="", description="Parent conversation ID")
+    data: CraftStreamingEvent = Field(
+        default_factory=CraftStreamingEvent, description="Streaming event data"
+    )
 
 
 class SessionListRequest(BaseModel):

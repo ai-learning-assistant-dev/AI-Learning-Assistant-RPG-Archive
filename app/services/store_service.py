@@ -34,7 +34,8 @@ class StoreService:
                 """
                 CREATE TABLE IF NOT EXISTS conversation (
                     id TEXT PRIMARY KEY,
-                    session_id TEXT NOT NULL,
+                    parent_cid TEXT DEFAULT '',
+                    session_id TEXT NOT NULL,s
                     content TEXT NOT NULL,
                     type TEXT NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -104,13 +105,15 @@ class StoreService:
             return cursor.rowcount > 0
 
     # ---------------------- Conversation CRUD ----------------------
-    async def add_conversation(self, session_id: str, content: str, type: str) -> str:
+    async def create_conversation(
+        self, session_id: str, content: str, type: str, parent_cid: str = ""
+    ) -> str:
         """Add a conversation entry for a session and return its UUID."""
         conv_id = uuid.uuid4().hex
         async with aiosqlite.connect(self._db_path) as db:
             await db.execute(
-                "INSERT INTO conversation (id, session_id, content, type) VALUES (?, ?, ?, ?)",
-                (conv_id, session_id, content, type),
+                "INSERT INTO conversation (id, parent_cid, session_id, content, type) VALUES (?, ?, ?, ?, ?)",
+                (conv_id, parent_cid, session_id, content, type),
             )
             await db.commit()
             return conv_id

@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 class Configuration(BaseModel):
     """Main configuration class for the card craft agent"""
 
-    common_model: str = Field(default="")
+    common_model: str = Field(default="default")
 
     common_model_provider: str = Field(default="")
 
