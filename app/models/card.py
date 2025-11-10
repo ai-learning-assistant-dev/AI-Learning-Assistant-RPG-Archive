@@ -3,6 +3,7 @@ Pydantic models for sillytavern character card
 酒馆角色卡格式
 """
 
+from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
@@ -26,7 +27,11 @@ class CraftStreamingEvent(BaseModel):
 
     stage: Optional[ResearchStage] = Field(None, description="Current research stage")
     content: str = Field(..., description="Event content or message")
-    timestamp: str = Field(..., description="ISO timestamp of the event")
+    FinalResp: dict = Field(default_factory=dict, description="Final response data")
+    timestamp: str = Field(
+        default_factory=datetime.now().isoformat,
+        description="ISO timestamp of the event",
+    )
 
 
 # 酒馆数据

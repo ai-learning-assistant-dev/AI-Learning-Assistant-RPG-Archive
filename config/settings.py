@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     # Logging
     log_level: str = Field(default="INFO")
 
+    # SQLite
+    database_path: str = Field(default="./app.db")
+
     class Config:
         env_file = ".env"
         env_nested_delimiter = "_"

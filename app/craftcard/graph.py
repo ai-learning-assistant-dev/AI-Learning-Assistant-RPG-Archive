@@ -68,6 +68,9 @@ async def clarify_intension(
         return Command(
             goto="play_core",
             update={
+                "messages": [
+                    AIMessage(content=resp.question)
+                ],  # 此时questions是衔接术语
                 "query": resp.verification,
             },
         )
