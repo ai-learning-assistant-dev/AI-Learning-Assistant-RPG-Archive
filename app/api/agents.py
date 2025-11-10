@@ -1,13 +1,12 @@
-import traceback
-
 from fastapi import APIRouter
-from fastapi.exceptions import HTTPException
 from fastapi.responses import StreamingResponse
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 
 from app.craftcard.configuration import Configuration
 from app.craftcard.craftcard_agent import CraftcardAgent
+from app.models.card import ResearchStage
 from app.models.schemas import CraftCardRequest, StreamEvent
-from app.models.store import ConversationType
+from app.models.store import ConversationType, SessionType
 from app.services.store_service import store_service
 from app.utils.logger import logger
 
@@ -19,42 +18,50 @@ async def craftcard(request: CraftCardRequest):
     """
     根据query制作一张角色卡 , sse接口推送中间过程
     """
-    try:
-        logger.info(
-            "Craftcard request started",
-            extra={"session_id": request.session_id, "model": request.model},
-        )
-        return StreamingResponse(
-            craftcard_stream(request), media_type="text/event-stream"
-        )
-    except Exception as e:
-        logger.error(
-            f"Craftcard error: {str(e)}",
-            extra={
-                "session_id": request.session_id,
-                "traceback": traceback.format_exc(),
-            },
-        )
-        raise HTTPException(status_code=500, detail=str(e)) from e
+    return StreamingResponse(craftcard_stream(request), media_type="text/event-stream")
 
 
 async def craftcard_stream(request: CraftCardRequest):
-    craftcard_agent = CraftcardAgent()
+
     configure = Configuration(common_model=request.model).model_dump()
 
     logger.info(
         "Craftcard stream started",
-        extra={"session_id": request.session_id, "query": request.query},
+        extra={
+            "session_id": request.session_id,
+            "query": request.query,
+            "model": request.model,
+        },
     )
 
-    message: list[dict] = [{"content": request.query, "type": ConversationType.HUMAN}]
+    message: list[BaseMessage] = [HumanMessage(content=request.query)]
     if not request.session_id:
         # 首次请求
-        session_id = await store_service.create_session(request.query)
+        stage = ResearchStage.INITIALIZATION
+        session_id = await store_service.create_session(
+            request.query, SessionType.CRAFTCARD
+        )
     else:
+        stage = ResearchStage.CLARIFICATION
         session_id = request.session_id
         old_message = await store_service.list_conversations(session_id)
-        message = old_message + message
+        format_message = []
+        for msg in old_message:
+            match msg["type"]:
+                case ConversationType.HUMAN:
+                    msg = HumanMessage(content=msg["content"])
+                case ConversationType.AI:
+                    msg = AIMessage(content=msg["content"])
+                case _:
+                    raise ValueError(f"Unknown message type: {msg['type']}")
+            format_message.append(msg)
+        message = format_message + message
+
+    craftcard_agent = CraftcardAgent(
+        stage=stage,
+        session_id=session_id,
+        messages=message,
+    )
 
     parent_id = await store_service.create_conversation(
         session_id=session_id,
@@ -76,8 +83,9 @@ async def craftcard_stream(request: CraftCardRequest):
         parent_id=parent_id,
     )
     content = ""
+
     async for event in craftcard_agent.craftcard_stream(
-        message, config_dict=configure, session_id=session_id
+        config_dict=configure,
     ):
         content += event.content + "\n"
         baseEvent.data = event.model_dump()

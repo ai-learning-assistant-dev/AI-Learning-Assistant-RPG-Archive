@@ -12,11 +12,11 @@ from fastapi.responses import JSONResponse
 
 from app.api.agents import router as agents_router
 from app.api.store import router as stores_router
-from app.middleware.request_id import RequestIDMiddleware
 from app.models.schemas import BaseResponse, HealthCheck
 from app.services.store_service import store_service
 from app.utils.http_client import close_http_client, init_http_client
 from app.utils.logger import logger
+from app.utils.middleware import RequestIDMiddleware
 from config.settings import settings
 
 

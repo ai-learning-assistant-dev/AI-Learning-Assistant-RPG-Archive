@@ -14,7 +14,7 @@ class StoreService:
         """Initialize the store service."""
         file_path = Path(settings.database_path)
         file_path.touch(exist_ok=True)
-        self._db_path = "sqlite+aiosqlite:///" + settings.database_path
+        self._db_path = settings.database_path
 
     async def init(self) -> None:
         """Idempotently创建表: 如果不存在则创建 (使用32位UUID主键)。不进行迁移或删除。"""
@@ -52,12 +52,13 @@ class StoreService:
             await db.commit()
 
     # ------------------------- Session CRUD -------------------------
-    async def create_session(self, title: str) -> str:
+    async def create_session(self, title: str, type: str) -> str:
         """Insert a new session and return its UUID (hex)."""
         session_id = uuid.uuid4().hex
         async with aiosqlite.connect(self._db_path) as db:
             await db.execute(
-                "INSERT INTO session (id, title) VALUES (?, ?)", (session_id, title)
+                "INSERT INTO session (id, title, type) VALUES (?, ?, ?)",
+                (session_id, title, type),
             )
             await db.commit()
             return session_id

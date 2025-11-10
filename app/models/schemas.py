@@ -53,7 +53,7 @@ class ChatRequest(BaseModel):
 
 class CraftCardRequest(BaseModel):
     query: str = Field(..., description="The query to describe card")
-    session_id: str = Field(..., description="The session ID")
+    session_id: str = Field(default="", description="The session ID")
     parent_cid: str = Field(default="", description="Parent conversation ID")
     model: str = Field(default="default", description="The model to use")
 

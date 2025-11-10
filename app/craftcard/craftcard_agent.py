@@ -4,6 +4,7 @@ from typing import Any, AsyncGenerator
 
 from langchain_core.messages import BaseMessage
 from langchain_core.runnables import RunnableConfig
+from pydantic import BaseModel
 
 from app.craftcard.graph import card_flow
 from app.craftcard.state import AgentInputState
@@ -11,32 +12,34 @@ from app.models.card import CraftStreamingEvent, ResearchStage
 from app.utils.logger import logger
 
 
-class CraftcardAgent:
+class CraftcardAgent(BaseModel):
     """制作角色卡的agent"""
 
+    stage: ResearchStage = ResearchStage.INITIALIZATION
+    session_id: str = ""
+    messages: list[BaseMessage] = []
+
     async def craftcard_stream(
-        self, query: list[dict], *, config_dict: dict, session_id: str
+        self,
+        config_dict: dict,
     ) -> AsyncGenerator[CraftStreamingEvent, None]:
         """
         主流程异步迭代器
         """
+        session_id = self.session_id
+        if self.stage == ResearchStage.INITIALIZATION:
+            yield CraftStreamingEvent(
+                stage=self.stage,
+                content="🚀 开始制作剧本",
+                timestamp=datetime.now().isoformat(),
+            )
 
-        current_stage = ResearchStage.INITIALIZATION
-
-        yield CraftStreamingEvent(
-            stage=current_stage,
-            content="🚀 开始制作剧本",
-            timestamp=datetime.now().isoformat(),
-        )
-
-        messages = [
-            BaseMessage(content=msg["content"], type=msg["type"]) for msg in query
-        ]
         logger.info(
-            "Craftcard initial", extra={"session_id": session_id, "msglist": messages}
+            "Craftcard initial",
+            extra={"session_id": session_id, "msglist": self.messages[-1].text()},
         )
 
-        input_state = AgentInputState(messages=messages)
+        input_state = AgentInputState(messages=self.messages)
         config = RunnableConfig(configurable=config_dict)
         node_count = 0
         chunk_start_time = time.time()
@@ -53,7 +56,6 @@ class CraftcardAgent:
                 )
 
                 for node_name, node_data in chunk.items():
-                    logger.info(f"Processing node: {node_name} (chunk {node_count})")
                     event = await self._process_node(
                         node_name, node_data, session_id, node_count
                     )
@@ -84,8 +86,11 @@ class CraftcardAgent:
             content = ""
             match stage:
                 case ResearchStage.CLARIFICATION:
-                    content = "🔍 正在分析用户输入"
-                    # TODO: 可以进一步细化澄清问题的内容
+                    if isinstance(node_data, dict) and "query" in node_data:
+                        # 已完成澄清阶段
+                        content = "🔍 " + node_data["messages"][-1].content
+                    else:
+                        content = node_data["messages"][-1].content
                 case ResearchStage.PLAY_CORE:
                     content = "1️⃣ 核心内容生成中..."
 
@@ -129,6 +134,7 @@ class CraftcardAgent:
         }
 
         stage = stage_mapping.get(node_name, ResearchStage.EXECUTION)
+        self.stage = stage
         content = await _generate_node_content(stage, node_data)
 
         event = CraftStreamingEvent(
