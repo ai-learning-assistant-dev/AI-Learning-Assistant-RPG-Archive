@@ -68,7 +68,8 @@ class StoreService:
         async with aiosqlite.connect(self._db_path) as db:
             db.row_factory = aiosqlite.Row
             cursor = await db.execute(
-                "SELECT id, title, created_at FROM session WHERE id = ?", (session_id,)
+                "SELECT id, title, type, created_at FROM session WHERE id = ?",
+                (session_id,),
             )
             row = await cursor.fetchone()
             return dict(row) if row else None
@@ -80,7 +81,7 @@ class StoreService:
         async with aiosqlite.connect(self._db_path) as db:
             db.row_factory = aiosqlite.Row
             cursor = await db.execute(
-                "SELECT id, title, created_at FROM session ORDER BY created_at DESC LIMIT ? OFFSET ?",
+                "SELECT id, title, type, created_at FROM session ORDER BY created_at DESC LIMIT ? OFFSET ?",
                 (limit, offset),
             )
             rows = await cursor.fetchall()

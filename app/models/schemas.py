@@ -3,11 +3,12 @@ Pydantic schemas for request and response models.
 """
 
 from datetime import datetime
+from functools import wraps
 from typing import Any, Callable, Generic, Optional, TypeVar
 
 from pydantic import BaseModel, Field
 
-from .store import Session
+from .store import Conversation, Session
 
 T = TypeVar("T")
 
@@ -28,6 +29,7 @@ class BaseResponse(BaseModel, Generic[T]):
 
 def standard_response():
     def decorator(func: Callable):
+        @wraps(func)
         async def wrapper(*args, **kwargs) -> BaseResponse[Any]:
             try:
                 result = await func(*args, **kwargs)
@@ -80,4 +82,16 @@ class ConversationListRequest(BaseModel):
 
 
 class ConversationListResponse(BaseModel):
-    conversations: list[str] = Field(default=[], description="List of conversations")
+    conversations: list[Conversation] = Field(
+        default=[], description="List of conversations"
+    )
+
+
+class DeleteSessionRequest(BaseModel):
+    session_id: str = Field(..., description="The session ID to delete")
+
+
+class DeleteSessionResponse(BaseModel):
+    success: bool = Field(
+        ..., description="Indicates if the session was successfully deleted"
+    )

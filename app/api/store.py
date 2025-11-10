@@ -1,9 +1,10 @@
 from fastapi import APIRouter
 
 from app.models.schemas import (
-    BaseResponse,
     ConversationListRequest,
     ConversationListResponse,
+    DeleteSessionRequest,
+    DeleteSessionResponse,
     SessionListRequest,
     SessionListResponse,
     standard_response,
@@ -34,10 +35,8 @@ async def list_conversations(param: ConversationListRequest):
 
 
 @router.post("/session/delete")
-async def delete_session(session_id: str):
+@standard_response()
+async def delete_session(param: DeleteSessionRequest):
     """Delete a session by its ID."""
-    success = await store_service.delete_session(session_id)
-    if not success:
-        return BaseResponse.error(data=None)
-
-    return BaseResponse.success(data=None)
+    success = await store_service.delete_session(param.session_id)
+    return DeleteSessionResponse(success=success)
