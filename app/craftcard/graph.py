@@ -11,6 +11,8 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import Command
 
+from app.utils.logger import logger
+
 from ..utils.model_config import modelSet
 from .configuration import Configuration
 from .prompts import (
@@ -55,6 +57,8 @@ async def clarify_intension(
     clarification_model = model.with_structured_output(ClarifyIntension).with_retry(
         stop_after_attempt=2
     )
+
+    logger.info("llm call", extra={"stage": "clarify_intension", "message": messages})
     prompt_content = clarify_intension_prompt.format(
         messages=get_buffer_string(messages)
     )
@@ -92,6 +96,8 @@ async def play_core(
         stop_after_attempt=2
     )
     prompt_content = play_core_prompt.format(query=state["query"])
+
+    logger.info("llm call", extra={"stage": "play_core", "message": state["query"]})
     play_core_resp = await play_core_model.ainvoke(
         [HumanMessage(content=prompt_content)]
     )
@@ -142,6 +148,7 @@ async def writer(
         )
 
     writer_model = model.with_retry(stop_after_attempt=2)
+    logger.info("llm call", extra={"stage": "writer", "message": writer_messages})
     writer_resp = await writer_model.ainvoke(writer_messages)
 
     if loop_count < configurable.max_loop_count and should_continue:
@@ -180,6 +187,9 @@ async def supervisor(
         stop_after_attempt=2
     )
     prompt_content = supervisor_prompt.format(messages=most_recent_message)
+    logger.info(
+        "llm call", extra={"stage": "supervisor", "message": most_recent_message}
+    )
     supervisor_resp = await supervisor_model.ainvoke(prompt_content)
 
     return Command(
@@ -210,6 +220,7 @@ async def play_complete(
         stop_after_attempt=2
     )
     prompt_content = final_output_prompt.format(text=final)
+    logger.info("llm call", extra={"stage": "play_complete", "message": final})
     final_card = await final_model.ainvoke(prompt_content)
     return Command(
         goto=END,

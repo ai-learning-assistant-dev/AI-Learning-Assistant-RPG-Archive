@@ -97,11 +97,11 @@ class CraftcardAgent(BaseModel):
                     if isinstance(node_data, dict):
                         name = node_data.get("playname", "未知剧本名称")
                         background = node_data.get("background", "未知背景信息")
-                        event_chain = node_data.get("eventChain", [])
+                        # event_chain = node_data.get("eventChain", [])
                         content += f"\n剧本名称: {name}\n背景: {background}\n"
-                        for idx, event in enumerate(event_chain, start=1):
-                            event_desc = event.get("name", "未知事件")
-                            content += f"   {idx}. {event_desc}"
+                        # for idx, event in enumerate(event_chain, start=1):
+                        #     event_desc = event.get("name", "未知事件")
+                        #     content += f"   {idx}. {event_desc}"
                 case ResearchStage.WRITER:
                     content = "✍️ 剧本撰写中..."
                     if isinstance(node_data, dict) and "final" in node_data:
