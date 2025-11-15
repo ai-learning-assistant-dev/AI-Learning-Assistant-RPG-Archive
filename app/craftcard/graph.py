@@ -58,7 +58,7 @@ async def clarify_intension(
         stop_after_attempt=2
     )
 
-    logger.info("llm call", extra={"stage": "clarify_intension", "message": messages})
+    logger.info("llm call", extra={"stage": "clarify_intension", "history": messages})
     prompt_content = clarify_intension_prompt.format(
         messages=get_buffer_string(messages)
     )
@@ -97,7 +97,7 @@ async def play_core(
     )
     prompt_content = play_core_prompt.format(query=state["query"])
 
-    logger.info("llm call", extra={"stage": "play_core", "message": state["query"]})
+    logger.info("llm call", extra={"stage": "play_core", "history": state["query"]})
     play_core_resp = await play_core_model.ainvoke(
         [HumanMessage(content=prompt_content)]
     )
@@ -148,7 +148,7 @@ async def writer(
         )
 
     writer_model = model.with_retry(stop_after_attempt=2)
-    logger.info("llm call", extra={"stage": "writer", "message": writer_messages})
+    logger.info("llm call", extra={"stage": "writer", "history": writer_messages})
     writer_resp = await writer_model.ainvoke(writer_messages)
 
     if loop_count < configurable.max_loop_count and should_continue:
@@ -188,7 +188,7 @@ async def supervisor(
     )
     prompt_content = supervisor_prompt.format(messages=most_recent_message)
     logger.info(
-        "llm call", extra={"stage": "supervisor", "message": most_recent_message}
+        "llm call", extra={"stage": "supervisor", "history": most_recent_message}
     )
     supervisor_resp = await supervisor_model.ainvoke(prompt_content)
 
@@ -220,7 +220,7 @@ async def play_complete(
         stop_after_attempt=2
     )
     prompt_content = final_output_prompt.format(text=final)
-    logger.info("llm call", extra={"stage": "play_complete", "message": final})
+    logger.info("llm call", extra={"stage": "play_complete", "history": final})
     final_card = await final_model.ainvoke(prompt_content)
     return Command(
         goto=END,
