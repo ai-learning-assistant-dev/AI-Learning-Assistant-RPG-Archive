@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     # SQLite
     database_path: str = Field(default="./app.db")
 
+    # 卡片存放路径
+    card_folder: str = Field(default="./cards")
+
     class Config:
         env_file = ".env"
         env_nested_delimiter = "_"

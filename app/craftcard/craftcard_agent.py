@@ -8,8 +8,17 @@ from pydantic import BaseModel
 
 from app.craftcard.graph import card_flow
 from app.craftcard.state import AgentInputState
-from app.models.card import CraftStreamingEvent, ResearchStage
+from app.models.card import (
+    CharacterBook,
+    CharacterCardV3,
+    CraftStreamingEvent,
+    Data,
+    ResearchStage,
+)
+from app.models.store import Card
+from app.services.store_service import store_service
 from app.utils.logger import logger
+from config.settings import settings
 
 
 class CraftcardAgent(BaseModel):
@@ -143,4 +152,57 @@ class CraftcardAgent(BaseModel):
             timestamp=datetime.now().isoformat(),
         )
 
+        if stage == ResearchStage.PLAY_COMPLETE:
+            final_card = node_data.get("final_card")
+            if final_card is None:
+                raise ValueError("Final card data is missing")
+            card = await self.store_card(final_card)
+            event.final_resp = card.model_dump()
+
         return event
+
+    async def store_card(self, data: dict) -> Card:
+        """导出角色卡"""
+        import asyncio
+        import hashlib
+        import os
+
+        logger.info("Storing final card", extra={"session_id": self.session_id})
+
+        card = CharacterCardV3(
+            name=data.get("title"),
+            first_mes=data.get("first_msg"),
+            data=Data(character_book=CharacterBook(entries=[])),
+            create_date=datetime.now().isoformat(),
+        )
+        json_data = card.model_dump_json(ensure_ascii=False)
+        hash_filename = hashlib.md5(json_data.encode("utf-8")).hexdigest()[:12]
+        filename = f"{hash_filename}.json"
+
+        def sync_write():
+            with open(os.path.join(settings.card_folder, filename), "w") as f:
+                f.write(json_data)
+
+        # 使用线程池执行
+        loop = asyncio.get_running_loop()
+        await loop.run_in_executor(None, sync_write)
+
+        card_id = await store_service.create_card(
+            session_id=self.session_id,
+            name=card.name,
+            hash=hash_filename,
+            background=data.get("first_msg", ""),
+        )
+
+        logger.info(
+            f"Card stored with ID: {card_id}, Filename: {filename}",
+            extra={"session_id": self.session_id},
+        )
+
+        return Card(
+            id=card_id,
+            session_id=self.session_id,
+            name=card.name,
+            hash=hash_filename,
+            background=data.get("first_msg", ""),
+        )

@@ -94,7 +94,7 @@ class CharacterBookEntry(BaseModel):
     enabled: bool  # 是否应用
     position: str  # 几个位置枚举 after_char
     use_regex: bool  # 大多为true
-    extensions: CharacterBookEntryExtensions
+    extensions: CharacterBookEntryExtensions | None = None
 
 
 class CharacterBook(BaseModel):
@@ -122,8 +122,8 @@ class Data(BaseModel):
 class CharacterCardV3(BaseModel):
     name: str
     first_mes: str
-    talkativeness: str
-    spec: str
-    spec_version: str
+    talkativeness: str = "0.5"
+    spec: str = "chara_card_v3"
+    spec_version: str = "3.0"
     data: Data
-    create_date: str
+    create_date: str = Field(..., description="Creation date in ISO format")

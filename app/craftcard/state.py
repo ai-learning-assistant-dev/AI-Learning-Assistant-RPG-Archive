@@ -92,6 +92,9 @@ class Event(BaseModel):
 class FinalResp(BaseModel):
     """Model for final response."""
 
+    title: str = Field(
+        description="剧本标题",
+    )
     first_msg: str = Field(
         description="第一幕的文本",
     )

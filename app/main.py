@@ -2,6 +2,7 @@
 FastAPI application setup and configuration.
 """
 
+import os
 from contextlib import asynccontextmanager
 from datetime import datetime
 
@@ -30,6 +31,7 @@ async def lifespan(app: FastAPI):
         init_http_client()
         await store_service.init()
         logger.info("LLM service is available")
+        os.makedirs(settings.card_folder, exist_ok=True)
 
     except Exception as e:
         logger.error(f"Error during service initialization: {e}")

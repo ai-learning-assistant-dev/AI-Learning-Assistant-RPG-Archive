@@ -33,3 +33,15 @@ class Conversation(BaseModel):
     created_at: str = Field(
         ..., description="ISO timestamp when the conversation was created"
     )
+
+
+class Card(BaseModel):
+    """Model for storing card data."""
+
+    id: str = Field(..., description="Unique identifier for the card")
+    session_id: str = Field(
+        ..., description="Identifier of the session this card belongs to"
+    )
+    name: str = Field(..., description="Name of the card")
+    hash: str = Field(..., description="Hash of the card data")
+    background: str = Field(..., description="Background information of the card")

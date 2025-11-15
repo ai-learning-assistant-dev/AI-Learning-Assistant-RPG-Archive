@@ -43,6 +43,19 @@ class StoreService:
                 );
                 """
             )
+
+            await db.execute(
+                """
+                CREATE TABLE IF NOT EXISTS card (
+                    id TEXT PRIMARY KEY,
+                    session_id TEXT NOT NULL,
+                    hash TEXT NOT NULL,
+                    background TEXT NOT NULL,
+                    FOREIGN KEY(session_id) REFERENCES session(id) ON DELETE CASCADE
+                );
+                """
+            )
+
             await db.execute(
                 """
                 CREATE INDEX IF NOT EXISTS idx_conversation_session_id
@@ -182,6 +195,41 @@ class StoreService:
             )
             await db.commit()
             return cursor.rowcount > 0
+
+    # ------------------------ store card -----------------------
+
+    async def create_card(
+        self, session_id: str, name: str, hash: str, background: str
+    ) -> str:
+        """Create a card file and return its filename."""
+        card_id = uuid.uuid4().hex
+        async with aiosqlite.connect(self._db_path) as db:
+            await db.execute(
+                "INSERT INTO card (id, session_id, name, hash, background) VALUES (?, ?, ?, ?, ?)",
+                (card_id, session_id, name, hash, background),
+            )
+            await db.commit()
+            return card_id
+
+    async def get_card(self, card_id: str) -> Optional[Dict[str, Any]]:
+        """Fetch a single card by id."""
+        async with aiosqlite.connect(self._db_path) as db:
+            cursor = await db.execute(
+                "SELECT id, session_id, name, hash, background FROM card WHERE id = ?",
+                (card_id,),
+            )
+            row = await cursor.fetchone()
+            return dict(row) if row else None
+
+    async def get_cards_by_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Fetch all cards for a given session."""
+        async with aiosqlite.connect(self._db_path) as db:
+            cursor = await db.execute(
+                "SELECT id, session_id, name, hash, background FROM card WHERE session_id = ?",
+                (session_id,),
+            )
+            row = await cursor.fetchone()
+            return dict(row) if row else None
 
 
 store_service = StoreService()
