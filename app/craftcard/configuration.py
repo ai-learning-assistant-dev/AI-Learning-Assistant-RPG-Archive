@@ -15,6 +15,8 @@ class Configuration(BaseModel):
 
     clarify_enable: bool = Field(default=True, description="是否开启意图澄清")
 
+    max_clarify_turns: int = Field(default=3, description="最大意图澄清轮数")
+
     @classmethod
     def from_runnable_config(cls, config: RunnableConfig | None) -> "Configuration":
         configurable = config.get("configurable", {}) if config else {}

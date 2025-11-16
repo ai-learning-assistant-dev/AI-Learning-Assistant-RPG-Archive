@@ -85,15 +85,26 @@ class CharacterBookEntryExtensions(BaseModel):  # 世界书单一条目的信息
 class CharacterBookEntry(BaseModel):
     id: int
     keys: List[str]  # 关键词
-    secondary_keys: List[str]  # 可选过滤器(st文本描述如此)
+    secondary_keys: List[str] = Field(
+        default_factory=list
+    )  # 可选过滤器(st文本描述如此)
     comment: str  # 描述
     content: str  # 激活后替换的文本
-    constant: bool  # 是否永久激活,为true就不管正则是否生效，都会插入世界书
-    selective: bool  # 永久为true？不知道含义
-    insertion_order: int  # 同一个插入位置的顺序，数字小的在上面
-    enabled: bool  # 是否应用
-    position: str  # 几个位置枚举 after_char
-    use_regex: bool  # 大多为true
+    constant: bool = Field(
+        default=True,
+        description="是否永久激活,为true就不管正则是否生效，都会插入世界书",
+    )  # 是否永久激活,为true就不管正则是否生效，都会插入世界书
+    selective: bool = Field(default=True)  # 永久为true？不知道含义
+    insertion_order: int = Field(
+        100, description="同一个插入位置的顺序，数字小的在上面"
+    )  # 同一个插入位置的顺序，数字小的在上面
+    enabled: bool = Field(default=True, description="是否应用")  # 是否应用
+    position: str = Field(
+        "after_char", description="几个位置枚举 after_char"
+    )  # 几个位置枚举 after_char
+    use_regex: bool = Field(
+        default=True, description="是否使用正则表达式"
+    )  # 大多为true
     extensions: CharacterBookEntryExtensions | None = None
 
 
@@ -113,9 +124,9 @@ class Extensions(BaseModel):
 class Data(BaseModel):
     name: str
     first_mes: str
-    alternate_greetings: List[str]
-    extensions: Extensions
-    group_only_greetings: List[str]
+    alternate_greetings: List[str] = Field(default_factory=list)
+    extensions: Extensions | None = None
+    group_only_greetings: List[str] = Field(default_factory=list)
     character_book: CharacterBook
 
 

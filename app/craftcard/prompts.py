@@ -3,6 +3,9 @@
 clarify_intension_prompt = """
 你是一个专业的跑团剧本策划助手，负责评估用户提供的文本素材是否包含足够信息，或者是否有足够的故事深度，可以推理出相关信息，用于后续生成一个具有现实主义风格的真实跑团剧本。
 请仔细阅读用户输入的文本，并基于以下标准判断其是否具备生成剧本的潜力
+当用户要求自由发挥时，提供一个随机时代的体现社会矛盾的故事背景
+当force为true时，直接根据历史聊天记录生成背景，不进行澄清
+force 当前值为: {force}
 
 评估标注:
 #背景设定是否清晰
@@ -38,10 +41,6 @@ For the verification message when no clarification is needed:
 - Confirm that you will now begin the research process
 - Keep the message concise and professional
 
-以下是与用户输入的文本：
-<Messages>
-{messages}
-</Messages>
 """
 
 play_core_prompt = """
@@ -124,9 +123,10 @@ text_expand_prompt = """
 """
 
 final_output_prompt = """
-你是一名跑团剧本的终稿输出助手，你的工作是根据提供给你的故事文本，生成符合结构的剧本终稿。
+你是一名跑团剧本的终稿输出助手，你的工作是根据提供给你的故事文本，总结符合结构的剧本终稿。
 需要生成不少于3个第一幕文本，每个第一幕文本需要有不同的情节发展，生成的文本要具有沉浸感，且文本的结束是轮到主角做出选择。
 需要生成主角，主角的基本信息描述，其他角色，事件的详细描述
+总结的文本描述需要详细，符合逻辑，不要进行总结。
 严格遵循下列JSON格式输出，不添加其他内容
     "first_msg":"第一幕的文本",
     "alternate_msgs":[

@@ -58,12 +58,16 @@ async def clarify_intension(
         stop_after_attempt=2
     )
 
-    logger.info("llm call", extra={"stage": "clarify_intension", "history": messages})
-    prompt_content = clarify_intension_prompt.format(
-        messages=get_buffer_string(messages)
+    logger.info(
+        "llm call",
+        extra={"stage": "clarify_intension", "history": get_buffer_string(messages)},
     )
+    force = len(messages) / 2 + 1 >= configurable.max_clarify_turns
+    prompt_content = clarify_intension_prompt.format(force=str(force).lower())
 
-    resp = await clarification_model.ainvoke([HumanMessage(content=prompt_content)])
+    resp = await clarification_model.ainvoke(
+        [SystemMessage(content=prompt_content), *messages]
+    )
     if resp.need_clarification:
         return Command(
             goto=END, update={"messages": [AIMessage(content=resp.question)]}
@@ -148,7 +152,10 @@ async def writer(
         )
 
     writer_model = model.with_retry(stop_after_attempt=2)
-    logger.info("llm call", extra={"stage": "writer", "history": writer_messages})
+    logger.info(
+        "llm call",
+        extra={"stage": "writer", "history": get_buffer_string(writer_messages)},
+    )
     writer_resp = await writer_model.ainvoke(writer_messages)
 
     if loop_count < configurable.max_loop_count and should_continue:
@@ -188,7 +195,8 @@ async def supervisor(
     )
     prompt_content = supervisor_prompt.format(messages=most_recent_message)
     logger.info(
-        "llm call", extra={"stage": "supervisor", "history": most_recent_message}
+        "llm call",
+        extra={"stage": "supervisor", "history": get_buffer_string(writer_messages)},
     )
     supervisor_resp = await supervisor_model.ainvoke(prompt_content)
 

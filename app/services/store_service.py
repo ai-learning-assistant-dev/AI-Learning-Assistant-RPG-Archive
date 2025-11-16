@@ -48,6 +48,7 @@ class StoreService:
                 """
                 CREATE TABLE IF NOT EXISTS card (
                     id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL,
                     session_id TEXT NOT NULL,
                     hash TEXT NOT NULL,
                     background TEXT NOT NULL,
