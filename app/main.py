@@ -3,6 +3,7 @@ FastAPI application setup and configuration.
 """
 
 import os
+import traceback
 from contextlib import asynccontextmanager
 from datetime import datetime
 
@@ -70,13 +71,19 @@ app.add_middleware(
 @app.exception_handler(Exception)
 async def general_exception_handler(request: Request, exc: Exception):
     """Handle general exceptions."""
-    logger.error(f"Unhandled exception: {exc}", exc_info=True)
+    err_stack = traceback.format_exc(limit=5)
+    logger.error(f"Unhandled exception: {str(exc)}", extra={"stack": err_stack})
+    data = {}
+    if settings.debug:
+        data["stack"] = err_stack
+        data["detail"] = str(exc)
+
     return JSONResponse(
         status_code=500,
         content=BaseResponse.error(
             code=500,
             message="Internal server error",
-            data={"detail": str(exc) if settings.debug else None},
+            data=data,
         ).model_dump(),
     )
 
