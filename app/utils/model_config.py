@@ -58,7 +58,7 @@ class Config(BaseModel):
             raise ConfigError("config_file is required")
 
         try:
-            with open(config_file, "r") as f:
+            with open(config_file, "r", encoding="utf-8") as f:
                 yaml_config = yaml.safe_load(f)
         except yaml.YAMLError as e:
             raise ConfigError("Error parsing YAML file") from e
