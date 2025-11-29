@@ -213,7 +213,9 @@ class CraftcardAgent(BaseModel):
         filename = f"{hash_filename}.json"
 
         def sync_write():
-            with open(os.path.join(settings.card_folder, filename), "w") as f:
+            with open(
+                os.path.join(settings.card_folder, filename), "w", encoding="utf-8"
+            ) as f:
                 f.write(json_data)
 
         # 使用线程池执行
