@@ -215,6 +215,7 @@ class StoreService:
     async def get_card(self, card_id: str) -> Optional[Dict[str, Any]]:
         """Fetch a single card by id."""
         async with aiosqlite.connect(self._db_path) as db:
+            db.row_factory = aiosqlite.Row
             cursor = await db.execute(
                 "SELECT id, session_id, name, hash, background FROM card WHERE id = ?",
                 (card_id,),
@@ -225,6 +226,7 @@ class StoreService:
     async def get_cards_by_session(self, session_id: str) -> Optional[Dict[str, Any]]:
         """Fetch all cards for a given session."""
         async with aiosqlite.connect(self._db_path) as db:
+            db.row_factory = aiosqlite.Row
             cursor = await db.execute(
                 "SELECT id, session_id, name, hash, background FROM card WHERE session_id = ?",
                 (session_id,),
