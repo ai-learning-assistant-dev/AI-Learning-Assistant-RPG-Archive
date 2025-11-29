@@ -158,6 +158,7 @@ async def writer(
     )
     writer_resp = await writer_model.ainvoke(writer_messages)
 
+    should_continue = False  # 这里先不多轮，效果不好控制，需要更加精细化的ReAct
     if loop_count < configurable.max_loop_count and should_continue:
         return Command(
             goto="supervisor",
