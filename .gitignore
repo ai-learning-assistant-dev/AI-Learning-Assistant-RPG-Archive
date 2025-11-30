@@ -7,4 +7,5 @@ __pycache__
 .coverage
 llm_config.yaml
 *.db
-cards/
+cards/*
+dist/*

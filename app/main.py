@@ -10,7 +10,7 @@ from datetime import datetime
 import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from app.api.agents import router as agents_router
 from app.api.store import router as stores_router
@@ -98,6 +98,24 @@ async def health_check():
 # Include API routers
 app.include_router(agents_router, prefix="/api/agents", tags=["agents"])
 app.include_router(stores_router, prefix="/api/store", tags=["store"])
+
+
+@app.get("/{full_path:path}")
+async def serve_spa(full_path: str):
+    # 构建完整文件路径
+    full_path = full_path or "index.html"  # 处理根路径 /
+    file_path = os.path.join(settings.frontend_path, full_path)
+
+    # 如果请求的是真实存在的静态文件（如 .js, .css, .png），直接返回
+    if os.path.isfile(file_path):
+        return FileResponse(file_path)
+
+    # 否则，返回 index.html（让前端路由接管）
+    index_path = os.path.join(settings.frontend_path, "index.html")
+    if os.path.isfile(index_path):
+        return FileResponse(index_path)
+
+    return {"error": "index.html not found"}, 404
 
 
 if __name__ == "__main__":

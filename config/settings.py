@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     # 卡片存放路径
     card_folder: str = Field(default="./cards")
 
+    # 前端构建目录
+    frontend_path: str = Field(default="./dist")
+
     class Config:
         env_file = ".env"
         env_nested_delimiter = "_"
