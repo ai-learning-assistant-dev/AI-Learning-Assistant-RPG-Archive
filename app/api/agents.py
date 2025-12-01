@@ -22,7 +22,6 @@ async def craftcard(request: CraftCardRequest):
 
 
 async def craftcard_stream(request: CraftCardRequest):
-
     configure = Configuration(common_model=request.model).model_dump()
 
     logger.info(

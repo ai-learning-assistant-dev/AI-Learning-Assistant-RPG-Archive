@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     # 前端构建目录
     frontend_path: str = Field(default="./dist")
 
+    sillytavern_host: str = Field(default="localhost:8000")
+
     class Config:
         env_file = ".env"
         env_nested_delimiter = "_"

@@ -27,6 +27,16 @@ class BaseResponse(BaseModel, Generic[T]):
         return cls(code=code, message=message, data=data)
 
 
+class KeyError(Exception):
+    def __init__(
+        self, msg: str = "key does not exist", data: str = "", code: int = 404
+    ):
+        self.msg = msg
+        self.data = data
+        self.code = code
+        super().__init__(msg)  # 保证 Exception 正常工作
+
+
 def standard_response():
     def decorator(func: Callable):
         @wraps(func)
@@ -34,6 +44,8 @@ def standard_response():
             try:
                 result = await func(*args, **kwargs)
                 return BaseResponse.success(data=result)
+            except KeyError as e:
+                return BaseResponse.error(code=e.code, message=e.msg, data=None)
             except Exception as e:
                 raise e  # 交给全局异常处理器处理
 
@@ -94,4 +106,10 @@ class DeleteSessionRequest(BaseModel):
 class DeleteSessionResponse(BaseModel):
     success: bool = Field(
         ..., description="Indicates if the session was successfully deleted"
+    )
+
+
+class CardImportRequest(BaseModel):
+    session_id: str = Field(
+        ..., description="The session ID to associate the card with"
     )
